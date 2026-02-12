@@ -1,0 +1,39 @@
+<div class="bg-white rounded-lg shadow overflow-hidden flex flex-col">
+  <!-- عکس -->
+  <div class="w-full h-40 bg-gray-100 flex items-center justify-center">
+    {% if product.image_uploud %}
+      <img src="{{ product.image_uploud.url }}" alt="{{ product.name }}" class="w-full h-full object-cover">
+    {% elif product.image_url %}
+      <img src="{{ product.image_url }}" alt="{{ product.name }}" class="w-full h-full object-cover">
+    {% else %}
+      <span class="text-gray-400 text-3xl">📷</span>
+    {% endif %}
+  </div>
+
+  <!-- محتوا (با فضای بالا/پایین) -->
+  <div class="p-2 flex-grow">
+    <h3 class="font-bold text-xs line-clamp-2">{{ product.name }}</h3>
+
+    {% if product.discount_percent > 0 %}
+      <div class="flex items-center justify-between mt-1">
+        <p class="text-discount-dark text-xs line-through">
+          {{ product.price|floatformat:0 }} تومان
+        </p>
+        <span class="bg-color-dark text-white text-xs font-bold px-2 py-0.5 rounded">
+          {{ product.discount_percent }}%
+        </span>
+      </div>
+      <p class="text-color-light font-bold text-xs mt-1">
+        {{ product.final_price|floatformat:0 }} تومان
+      </p>
+    {% else %}
+      <p class="text-color-light font-bold text-xs mt-1">
+        {{ product.price|floatformat:0 }} تومان
+      </p>
+    {% endif %}
+
+    {% if product.stock == 0 %}
+      <p class="text-red-500 text-xs mt-1">نا موجود</p>
+    {% endif %}
+  </div>
+</div>

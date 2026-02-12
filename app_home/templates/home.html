@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home</title>
+  {% load static %}
+  <!-- Tailwind -->
+  <script src="{% static 'js/tailwind.js' %}"></script>
+  <style>
+    :root {
+    --primary-color: #3b82f6;      /* آبی پیش‌فرض */
+    --primary-dark: #2563eb;
+  }
+
+
+  .text-color-light { color: var(--primary-color); }
+  .text-discount-dark{ color: var(--primary-dark); }
+  .bg-color-light { background-color: var(--primary-color); }
+  .bg-color-dark { background-color: var(--primary-dark); }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  </style>
+</head>
+<body class="pt-16 pb-16">
+
+  <div class="fixed top-0 left-0 w-full bg-white py-3 shadow-md z-50 flex items-center justify-between px-4">
+    <a href="/">
+      <h1 class="text-xl font-bold text-gray-800">SHOP_NAME</h1>
+    </a>
+    <button id="menu-toggle" class="text-xl font-bold">☰</button>
+  </div>
+
+  <div id="mobile-menu" class="hidden absolute top-16 left-0 w-full bg-white shadow-lg z-50">
+    <div class="px-4 py-3">
+        <form method="get" class="flex items-center gap-2">
+          <button type="submit" class="text-xl w-10 h-10 flex items-center justify-center bg-gray-100 rounded-lg hover:bg-gray-200">
+              ⌕ 
+          </button>
+          <input
+          type="text"
+          name="search"
+          value="{{ request.GET.search }}"
+          placeholder="جستجو"
+          class="flex-1 px-4 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
+          >
+        </form>
+      </div>
+    <div class="relative">
+      <button id="category-toggle" class="w-full flex items-center justify-between px-4 py-3 text-gray-800 hover:bg-gray-100 text-right">
+        <span>دسته بندی</span>
+        <span class="text-xl">⊞</span>
+      </button>
+
+      <div id="category-list" class="hidden bg-gray-50 py-2">
+        {% for category in categories %}
+          <a href="{% url 'home' %}?category={{ category.id }}" class="block px-6 py-2 text-gray-700 hover:bg-white">
+            {{ category.name }}
+          </a>
+          {% endfor %}
+      </div>
+    </div>
+  </div>
+ <div class="p-4">
+  <div class="flex items-center justify-between mb-3">
+    <h2 class="text-lg font-bold text-gray-800">پرفروش‌ترین</h2>
+  </div>
+  <div class="flex overflow-x-auto gap-3 pb-2 px-3 py-3 rounded-xl w-full bg-blue-600">
+    {% for product in bestsellers %}
+      <div class="flex-shrink-0 w-40">
+        <a href="#" class="block">
+          {% include "app_product/product_card.html" with product=product %}
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+
+
+
+
+  <h2>همه محصولات</h2>
+  <div class="grid grid-cols-2 gap-3 p-2">
+    {% for product in all_products %}
+      <a href="#" class="block">
+          {% include "app_product/product_card.html" with product=product %}
+        </a>
+    {% empty %}
+      <p class="col-span-2 text-center text-gray-500 py-8">محصولی وجود ندارد</p>
+    {% endfor %}
+  </div>
+</div>
+
+ <nav class="fixed bottom-0 left-0 w-full h-16 z-50 bg-gray-800">
+    <div class="flex justify-around items-center h-16 max-w-md mx-auto">
+      <a href="/" class="flex flex-col items-center text-white">
+        <span class="text-xl">⌂</span>
+        <span class="text-xs mt-1">خانه</span>
+      </a>
+      <a href="#" class="flex flex-col items-center text-white">
+        <span class="text-xl">🛒</span>
+        <span class="text-xs mt-1">سبد خرید</span>
+      </a>
+      <a href="#" class="flex flex-col items-center text-white">
+        <span class="text-xl">👤</span>
+        <span class="text-xs mt-1">حساب</span>
+      </a>
+    </div>
+  </nav>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const toggle = document.getElementById('menu-toggle');
+      const menu = document.getElementById('mobile-menu');
+      if (toggle && menu) {
+        toggle.addEventListener('click', () => {
+          menu.classList.toggle('hidden');
+        });
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.getElementById('category-toggle');
+    const list = document.getElementById('category-list');
+
+    if (toggle && list) {
+      toggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        list.classList.toggle('hidden');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!toggle.contains(e.target) && !list.contains(e.target)) {
+          list.classList.add('hidden');
+        }
+      });
+    }
+  });
+  </script>
+</body>
+</html>
