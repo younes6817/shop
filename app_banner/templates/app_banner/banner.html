@@ -1,0 +1,28 @@
+<!-- app_banner/templates/app_banner/banner.html -->
+<div class="mb-6">
+  {% for banner in banners %}
+  <div class="relative w-full mb-4 rounded-xl overflow-hidden">
+    {% if banner.final_link %}
+      <a href="{{ banner.final_link }}" class="block">
+    {% endif %}
+
+    {% if banner.image_upload %}
+      <img src="{{ MEDIA_URL }}{{ banner.image_upload }}" alt="{{ banner.title }}" class="w-full h-auto object-cover">
+    {% elif banner.image_url %}
+      <img src="{{ banner.image_url }}" alt="{{ banner.title }}" class="w-full h-auto object-cover">
+    {% else %}
+      <div class="bg-gray-200 w-full h-48 flex items-center justify-center">🖼️ {{ banner.title }}</div>
+    {% endif %}
+
+    {% if banner.title %}
+      <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-4">
+        <h3 class="text-white text-lg font-bold">{{ banner.title }}</h3>
+      </div>
+    {% endif %}
+
+    {% if banner.final_link %}
+      </a>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>

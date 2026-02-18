@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+      {% load static %}
+  <!-- Tailwind -->
+  <script src="{% static 'js/tailwind.js' %}"></script>
+  <style>
+    :root {
+    --primary-color: #3b82f6;      /* آبی پیش‌فرض */
+    --primary-dark: #2563eb;
+  }
+
+
+  .text-color-light { color: var(--primary-color); }
+  .text-discount-dark{ color: var(--primary-dark); }
+  .bg-color-light { background-color: var(--primary-color); }
+  .bg-color-dark { background-color: var(--primary-dark); }
+  
+  </style>
+</head>
+<body>
+    <div class="min-h-screen flex items-center justify-center w-50 h-200">
+        <h2>Login</h2>
+        <form method="post">
+            
+        <button type="submit">Login</button>
+        </form>
+    </div>
+
+</body>
+</html>

@@ -1,17 +1,11 @@
-<div class="bg-white rounded-lg shadow overflow-hidden flex flex-col">
+<div class="bg-white rounded-lg shadow overflow-hidden flex flex-col min-h-[180px]">
   <!-- عکس -->
   <div class="w-full h-40 bg-gray-100 flex items-center justify-center">
-    {% if product.image_uploud %}
-      <img src="{{ product.image_uploud.url }}" alt="{{ product.name }}" class="w-full h-full object-cover">
-    {% elif product.image_url %}
-      <img src="{{ product.image_url }}" alt="{{ product.name }}" class="w-full h-full object-cover">
-    {% else %}
-      <span class="text-gray-400 text-3xl">📷</span>
-    {% endif %}
+      <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover">
   </div>
 
-  <!-- محتوا (با فضای بالا/پایین) -->
-  <div class="p-2 flex-grow">
+  <!-- محتوا -->
+  <div class="p-2 flex-grow flex flex-col justify-between">
     <h3 class="font-bold text-xs line-clamp-2">{{ product.name }}</h3>
 
     {% if product.discount_percent > 0 %}
@@ -19,7 +13,7 @@
         <p class="text-discount-dark text-xs line-through">
           {{ product.price|floatformat:0 }} تومان
         </p>
-        <span class="bg-color-dark text-white text-xs font-bold px-2 py-0.5 rounded">
+        <span class="bg-color-dark text-white text-xs font-bold px-2 py-0.5 rounded whitespace-nowrap">
           {{ product.discount_percent }}%
         </span>
       </div>
@@ -27,6 +21,8 @@
         {{ product.final_price|floatformat:0 }} تومان
       </p>
     {% else %}
+      <!-- فضای خالی برای هماهنگی -->
+      <div class="h-6"></div>
       <p class="text-color-light font-bold text-xs mt-1">
         {{ product.price|floatformat:0 }} تومان
       </p>

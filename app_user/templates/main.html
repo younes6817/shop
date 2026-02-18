@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    {% load static %}
+  <!-- Tailwind -->
+  <script src="{% static 'js/tailwind.js' %}"></script>
+  <style>
+    :root {
+    --primary-color: #3b82f6;
+    --primary-dark: #2563eb;
+  }
+
+
+  .text-color-light { color: var(--primary-color); }
+  .text-discount-dark{ color: var(--primary-dark); }
+  .bg-color-light { background-color: var(--primary-color); }
+  .bg-color-dark { background-color: var(--primary-dark); }
+  
+  </style>
+</head>
+<body>
+    <div class="border-b text-gray-500">
+      <p class="text-l right">{{ user.first_name}} {{ user.last_name }}</p>
+      <p class="text-l right">{{ user.phone }}</p>
+      <a href="#" class="text-l left">✎ ویرایش جساب کاربری</a>
+       
+    </div>
+</body>
+</html>
