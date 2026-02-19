@@ -38,7 +38,7 @@ class User(AbstractUser):
 
     role = models.CharField(
         max_length=20,
-        choices=settings.USER_ROLE,
+        choices=settings.base.USER_ROLE,
         default='customer'
     )
     point = models.PositiveIntegerField(default=0)
