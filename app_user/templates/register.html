@@ -4,7 +4,7 @@
 {% block content %}
 <div class="max-w-md mx-auto py-6">
   <section class="bg-white rounded-2xl shadow p-5">
-    <!-- فرم ثبت‌نام کاربر جدید -->
+    
     <h1 class="text-xl font-bold text-gray-800 mb-4">ایجاد حساب کاربری</h1>
 
     <form method="post" class="space-y-3">
@@ -30,7 +30,7 @@
         {{ form.password_confirm }}
       </div>
 
-      <!-- نمایش خطاهای فرم به صورت ساده -->
+      
       {% if form.errors %}
         <div class="text-sm text-red-600">
           {{ form.errors }}
@@ -49,3 +49,4 @@
   </section>
 </div>
 {% endblock %}
+

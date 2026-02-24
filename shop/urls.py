@@ -1,4 +1,4 @@
-from . import settings
+﻿from . import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
@@ -14,3 +14,5 @@ urlpatterns = [
 
 if settings.base.DEBUG:
     urlpatterns += static(settings.base.MEDIA_URL, document_root=settings.base.MEDIA_ROOT)
+
+

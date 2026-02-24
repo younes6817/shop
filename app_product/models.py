@@ -27,7 +27,6 @@ class Product(models.Model):
     def clean(self):
         super().clean()
     
-    # ✅ متد کمکی تبدیل عدد به فارسی (این رو اضافه کن!)
     def _to_persian_num(self, num):
         """تبدیل عدد انگلیسی به فارسی"""
         if num is None:

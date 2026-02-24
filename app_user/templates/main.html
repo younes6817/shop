@@ -5,18 +5,18 @@
 <div class="max-w-md mx-auto py-4 space-y-4">
 
   {% if user.is_authenticated %}
-    <!-- کارت اصلی حساب کاربر -->
+    
     <section class="relative overflow-hidden rounded-2xl bg-color-light text-white p-5 shadow">
-      <!-- شکل دایره پس‌زمینه برای جذابیت بصری -->
+      
       <div class="absolute -top-8 -left-8 w-28 h-28 rounded-full bg-white/20"></div>
-      <!-- شکل مربع چرخیده در پس‌زمینه -->
+      
       <div class="absolute -bottom-10 -right-6 w-24 h-24 rotate-12 rounded-2xl bg-white/15"></div>
 
       <div class="relative z-10 flex items-center gap-4">
-        <!-- آیکن بزرگ کاربر -->
+        
         <div class="w-16 h-16 rounded-full bg-white/25 flex items-center justify-center text-3xl">👤</div>
         <div>
-          <!-- اگر نام خالی بود، شماره موبایل نمایش داده می‌شود -->
+          
           <h1 class="text-xl font-extrabold">
             {% if user.get_full_name %}
               {{ user.get_full_name }}
@@ -32,7 +32,7 @@
       </div>
     </section>
 
-    <!-- گزینه‌های تنظیمات حساب -->
+    
     <section class="bg-white rounded-2xl shadow p-3">
       <h2 class="text-sm font-bold text-gray-800 mb-3">تنظیمات حساب</h2>
       <div class="space-y-2">
@@ -45,7 +45,7 @@
       </div>
     </section>
 
-    <!-- اکشن‌های حساس حساب: خروج و حذف -->
+    
     <section class="bg-white rounded-2xl shadow p-3 space-y-2">
       <form method="post" action="{% url 'user:logout' %}">
         {% csrf_token %}
@@ -62,7 +62,7 @@
       </form>
     </section>
   {% else %}
-    <!-- حالت کاربر لاگین‌نشده -->
+    
     <section class="rounded-2xl bg-white shadow p-5 text-center">
       <div class="w-16 h-16 rounded-full bg-gray-100 mx-auto mb-3 flex items-center justify-center text-2xl">🔐</div>
       <h1 class="text-lg font-bold text-gray-800">حساب کاربری</h1>
@@ -77,3 +77,4 @@
   {% endif %}
 </div>
 {% endblock %}
+

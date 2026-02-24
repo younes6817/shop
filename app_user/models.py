@@ -7,7 +7,6 @@ from shop import settings
 
 class UserManager(BaseUserManager):
     def create_user(self, phone=None, password=None, **extra_fields):
-        # برای ساخت کاربر، داشتن حداقل یکی از موبایل یا ایمیل الزامی است.
         email = extra_fields.get("email")
         if not phone and not email:
             raise ValueError("حداقل یکی از شماره تلفن یا ایمیل الزامی است.")
@@ -32,7 +31,6 @@ class UserManager(BaseUserManager):
 class User(AbstractUser):
     username = None
 
-    # موبایل اختیاری است تا کاربر بتواند فقط با ایمیل ثبت‌نام کند.
     phone = models.CharField(
         max_length=11,
         unique=True,
@@ -51,3 +49,4 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.phone or self.email or str(self.pk)
+

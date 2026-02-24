@@ -6,7 +6,6 @@ class Banner(models.Model):
     image_url = models.URLField(blank=True, null=True, verbose_name="آدرس عکس (URL)")
     image_upload = models.ImageField(upload_to='banners/', blank=True, null=True, verbose_name="عکس آپلودی")
     
-    # --- لینک‌ها ---
     link_to = models.URLField(blank=True, null=True, verbose_name="لینک خارجی")
     product_to = models.ForeignKey(
         Product,
@@ -25,30 +24,24 @@ class Banner(models.Model):
         from django.core.exceptions import ValidationError
         super().clean()
         
-        # حداقل یکی از عکس‌ها باید پر باشه
         if not self.image_url and not self.image_upload:
             raise ValidationError("حداقل یکی از «آدرس عکس» یا «عکس آپلودی» را پر کنید.")
         
-        # فقط یکی از عکس‌ها
         if self.image_url and self.image_upload:
             raise ValidationError("فقط یکی از گزینه‌ها را انتخاب کنید.")
         
-        # حداقل یکی از لینک‌ها
         if not self.link_to and not self.product_to:
             raise ValidationError("حداقل یکی از «لینک خارجی» یا «لینک به محصول» را پر کنید.")
         
-        # فقط یکی از لینک‌ها
         if self.link_to and self.product_to:
             raise ValidationError("فقط یکی از لینک‌ها را انتخاب کنید.")
 
     def save(self, *args, **kwargs):
-    # پاک‌سازی image_url
         if self.image_url and self.image_url.strip().lower() == 'none':
             self.image_url = None
         elif self.image_url:
             self.image_url = self.image_url.strip()
 
-        # پاک‌سازی image_upload
         if self.image_upload and str(self.image_upload) == 'None':
             self.image_upload = None
 

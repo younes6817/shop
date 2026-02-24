@@ -1,4 +1,4 @@
-from django.db import models
+﻿from django.db import models
 from app_user.models import User
 
 class Setting(models.Model):

@@ -1,4 +1,3 @@
-# app_product/templatetags/persian_numbers.py
 from django import template
 
 register = template.Library()
@@ -32,10 +31,8 @@ def to_persian_price(value):
     except (ValueError, TypeError):
         return str(value)
     
-    # اضافه کردن جداکننده هزارگان
     num_str = '{:,}'.format(num)
     
-    # تبدیل به فارسی
     persian_digits = '۰۱۲۳۴۵۶۷۸۹'
     english_digits = '0123456789'
     

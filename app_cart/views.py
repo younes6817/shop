@@ -62,7 +62,6 @@ def add_to_cart(request):
         if color_id:
             selected_color = get_object_or_404(ProductColor, pk=color_id, product=product)
         else:
-            # If product has color variants but no color was sent, use default/first color.
             selected_color = (
                 product.colors.filter(is_default=True).first()
                 or product.colors.first()
@@ -125,3 +124,4 @@ def update_quantity(request, item_id):
     cart_item.quantity = new_quantity
     cart_item.save()
     return JsonResponse({"success": True, "new_quantity": new_quantity})
+

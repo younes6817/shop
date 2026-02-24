@@ -5,20 +5,16 @@ from .models import User
 
 
 class RegisterForm(forms.ModelForm):
-    # فیلد رمز جداست تا تکرار رمز را بررسی کنیم و رمز را هش ذخیره کنیم.
     password = forms.CharField(widget=forms.PasswordInput, label="رمز عبور")
     password_confirm = forms.CharField(widget=forms.PasswordInput, label="تکرار رمز عبور")
 
     class Meta:
         model = User
-        # طبق درخواست: نام کاربر نخواهیم. فقط راه ارتباطی + رمز.
         fields = ["phone", "email"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # برای ثبت‌نام، هر دو فیلد ایمیل و موبایل اختیاری‌اند؛
-        # اما در clean بررسی می‌کنیم حداقل یکی پر شده باشد.
         self.fields["phone"].required = False
         self.fields["email"].required = False
 
@@ -38,7 +34,6 @@ class RegisterForm(forms.ModelForm):
         password = cleaned_data.get("password")
         password_confirm = cleaned_data.get("password_confirm")
 
-        # شرط اصلی: حداقل یکی از ایمیل یا موبایل باید پر شود.
         if not phone and not email:
             raise ValidationError("حداقل یکی از ایمیل یا شماره تلفن را وارد کنید.")
 
@@ -56,7 +51,6 @@ class RegisterForm(forms.ModelForm):
 
 
 class LoginForm(forms.Form):
-    # کاربر می‌تواند با موبایل یا ایمیل وارد شود.
     identifier = forms.CharField(label="موبایل یا ایمیل")
     password = forms.CharField(widget=forms.PasswordInput, label="رمز عبور")
 
@@ -65,3 +59,4 @@ class LoginForm(forms.Form):
         common_class = "w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none"
         self.fields["identifier"].widget.attrs["class"] = common_class
         self.fields["password"].widget.attrs["class"] = common_class
+

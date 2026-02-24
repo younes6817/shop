@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}{{ SHOP_NAME }}{% endblock %}</title>
   {% load static %}
-  <!-- Tailwind -->
+  
   <script src="{% static 'js/tailwind.js' %}"></script>
   <style>
     :root {
-      --primary-color: #6b6b6b;
-      --primary-dark: #000000;
+      --primary-color: #ff0000;
+      --primary-dark: #b10303;
     }
     .text-color-light { color: var(--primary-color); }
     .text-discount-dark { color: var(--primary-dark); }
@@ -27,7 +27,7 @@
 </head>
 <body class="pt-16 pb-16">
 
-  <!-- نوار بالا -->
+  
   <div class="fixed top-0 left-0 w-full bg-white py-3 shadow-md z-50 flex items-center justify-between px-4">
     <a href="{% url 'home:home' %}">
       <h1 class="text-xl font-bold text-gray-800">{{ SHOP_NAME }}</h1>
@@ -35,7 +35,7 @@
     <button id="menu-toggle" class="text-xl font-bold">☰</button>
   </div>
 
-  <!-- منوی موبایل -->
+  
   <div id="mobile-menu" class="hidden absolute top-16 left-0 w-full bg-white shadow-lg z-50">
     <div class="px-4 py-3">
       <form method="get" action="{% url 'home:home' %}" class="flex items-center gap-2">
@@ -66,12 +66,12 @@
     </div>
   </div>
 
-  <!-- محتوای اصلی -->
+  
   <main class="p-4">
     {% block content %}{% endblock %}
   </main>
 
-  <!-- نوار پایین -->
+  
   <nav class="fixed bottom-0 left-0 w-full h-16 z-50 bg-gray-800">
     <div class="flex justify-around items-center h-16 max-w-md mx-auto">
       <a href="{% url 'home:home' %}" class="flex flex-col items-center text-white">
@@ -89,7 +89,7 @@
     </div>
   </nav>
 
-  <!-- اسکریپت‌های مشترک -->
+  
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const toggle = document.getElementById('menu-toggle');
@@ -116,7 +116,6 @@
       }
     });
 
-  // تابع CSRF Token
   function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -132,7 +131,6 @@
     return cookieValue;
   }
 
-  // تابع حذف از سبد خرید
   function removeFromCart(itemId, event) {
     if (event) {
       event.stopPropagation();
@@ -186,3 +184,6 @@
   </script>
 </body>
 </html>
+
+
+

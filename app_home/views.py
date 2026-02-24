@@ -1,4 +1,4 @@
-from django.shortcuts import render
+﻿from django.shortcuts import render
 
 from app_banner.models import Banner
 from app_product.models import Product
@@ -13,13 +13,11 @@ def home_view(request):
     if query:
         products = products.filter(name__icontains=query)
 
-    # فقط وقتی category عدد معتبر باشد فیلتر را اعمال می‌کنیم.
     if category_id.isdigit():
         products = products.filter(category_id=int(category_id))
     else:
         category_id = ""
 
-    # وقتی فیلتر/جستجو فعال است، سکشن‌های صفحه اصلی نباید نمایش داده شوند.
     show_home_extras = not query and not category_id
 
     if show_home_extras:
@@ -46,3 +44,4 @@ def home_view(request):
             "show_home_extras": show_home_extras,
         },
     )
+

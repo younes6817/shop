@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
@@ -6,10 +6,8 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    # پیش‌فرض: نسخه نرمال
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'shop.settings.normal')
     
-    # امکان تغییر نسخه از طریق متغیر محیطی
     if 'DJANGO_SETTINGS_MODULE' not in os.environ:
         version = os.environ.get('APP_VERSION', 'normal')
         os.environ.setdefault('DJANGO_SETTINGS_MODULE', f'shop.settings.{version}')
@@ -26,3 +24,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+

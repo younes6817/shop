@@ -1,14 +1,15 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 {% block title %}{{ product.name }}{% endblock %}
 
 {% block content %}
 <div class="container mx-auto p-4">
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
     
-    <!-- بخش عکس‌ها -->
+    
     <div class="relative">
       
-      <!-- نسخه نرمال: فقط یک عکس -->
+      
+      <!-- حالت عادی: وقتی premium/super فعال نیست -->
       {% if not PREMIUM_FEATURES and not SUPER_FEATURES %}
       <div class="relative w-full overflow-hidden rounded-xl bg-gray-100 flex items-center justify-center" style="min-height: 256px;">
         {% if product.images.first %}
@@ -19,12 +20,12 @@
         >
         {% else %}
         <div class="w-full h-64 flex items-center justify-center bg-gray-200">
-          <span class="text-gray-400 text-4xl">📷</span>
+          <span class="text-gray-400 text-4xl">ðŸ“·</span>
         </div>
         {% endif %}
       </div>
       
-      <!-- نسخه پرمیوم/سوپر: اسلایدر کامل -->
+      
       {% else %}
       <div class="relative w-full overflow-hidden rounded-xl bg-gray-100 flex items-center justify-center" style="min-height: 256px;">
         
@@ -40,7 +41,7 @@
           </div>
           {% empty %}
           <div class="w-full h-64 flex items-center justify-center bg-gray-200">
-            <span class="text-gray-400 text-4xl">📷</span>
+            <span class="text-gray-400 text-4xl">ðŸ“·</span>
           </div>
           {% endfor %}
           
@@ -53,7 +54,7 @@
         class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center hover:bg-black/70 transition z-10"
         type="button"
       >
-        ‹
+        â€¹
       </button>
 
       <button 
@@ -61,7 +62,7 @@
         class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center hover:bg-black/70 transition z-10"
         type="button"
       >
-        ›
+        â€º
       </button>
 
       <div class="flex justify-center gap-2 mt-3" id="dots-container">
@@ -79,42 +80,42 @@
 
     </div>
 
-    <!-- بخش اطلاعات محصول (چیدمان اصلاح‌شده) -->
+    
     <div class="flex flex-col justify-center md:items-start items-center text-center md:text-right">
       <h1 class="text-lg md:text-2xl font-bold text-gray-800 mb-2 md:mb-3">{{ product.name }}</h1>
       
-      <!-- قیمت و تخفیف -->
+      
       <div class="flex items-center gap-2 md:gap-4 mb-3 md:mb-4 flex-wrap justify-center md:justify-start w-full">
         
         {% if product.discount_percent and product.discount_percent > 0 %}
-          <!-- قیمت اصلی (خط‌خورده) -->
+          
           <span class="text-sm md:text-lg text-gray-400 line-through">
-            {{ product.persian_price }} تومان
+            {{ product.persian_price }} ØªÙˆÙ…Ø§Ù†
           </span>
           
-          <!-- درصد تخفیف -->
+          
           <span class="bg-color-dark text-white px-2 py-1 rounded text-xs md:text-sm">
-            {{ product.discount_percent }}% تخفیف
+            {{ product.discount_percent }}% ØªØ®ÙÛŒÙ
           </span>
           
-          <!-- قیمت نهایی (آبی - بزرگ) -->
+          
           <span class="text-xl md:text-3xl font-bold text-color-light">
-            {{ product.persian_final_price }} تومان
+            {{ product.persian_final_price }} ØªÙˆÙ…Ø§Ù†
           </span>
         {% else %}
-          <!-- بدون تخفیف -->
+          
           <span class="text-xl md:text-3xl font-bold text-color-light">
-            {{ product.persian_price }} تومان
+            {{ product.persian_price }} ØªÙˆÙ…Ø§Ù†
           </span>
         {% endif %}
         
       </div>
 
       <p class="text-sm md:text-base text-gray-600 mb-4 md:mb-6 w-full">
-        {{ product.description|default:"توضیحاتی وجود ندارد" }}
+        {{ product.description|default:"ØªÙˆØ¶ÛŒØ­Ø§ØªÛŒ ÙˆØ¬ÙˆØ¯ Ù†Ø¯Ø§Ø±Ø¯" }}
       </p>
 
-      <!-- ✅ بخش انتخاب رنگ (چندگانه) -->
+      
       {% if product.has_colors %}
       <div class="mb-4 md:mb-6 w-full flex justify-center md:justify-start">
         <div class="flex flex-wrap gap-2 w-full">
@@ -127,25 +128,25 @@
             data-color-name="{{ color_option.color_name }}"
             onclick="selectProductColor(this)"
           >
-            <!-- دایره رنگ -->
+            
             <span 
               class="w-5 h-5 md:w-6 md:h-6 rounded-full border border-gray-300 shadow-sm flex-shrink-0"
               style="background-color: {{ color_option.color }};"
             ></span>
-            <!-- نام رنگ -->
+            
             <span class="text-sm md:text-base text-gray-700 font-medium">
               {{ color_option.color_name }}
             </span>
-            <!-- موجودی -->
+            
             {% if color_option.stock == 0 %}
-            <span class="text-xs text-red-500">(ناموجود)</span>
+            <span class="text-xs text-red-500">(Ù†Ø§Ù…ÙˆØ¬ÙˆØ¯)</span>
             {% endif %}
           </button>
           {% endfor %}
         </div>
       </div>
       
-      <!-- فیلد مخفی برای ذخیره رنگ انتخاب‌شده -->
+      
       <input type="hidden" id="selected-color-id" name="color_id" value="{{ product.colors.first.id }}">
       {% endif %}
 
@@ -155,16 +156,16 @@
         type="button"
         onclick="addToCart({{ product.id }})"
       >
-        🛒 افزودن به سبد خرید
+        ðŸ›’ Ø§ÙØ²ÙˆØ¯Ù† Ø¨Ù‡ Ø³Ø¨Ø¯ Ø®Ø±ÛŒØ¯
       </button>
       <div class="mt-6 w-full">
         {% if product_spec %}
-          <h3 class="text-lg font-bold mb-2">مشخصات محصول</h3>
+          <h3 class="text-lg font-bold mb-2">Ù…Ø´Ø®ØµØ§Øª Ù…Ø­ØµÙˆÙ„</h3>
           <table class="w-full border-collapse">
             <thead>
               <tr>
-                <th class="border p-2 text-right">ویژگی</th>
-                <th class="border p-2 text-left">مقدار</th>
+                <th class="border p-2 text-right">ÙˆÛŒÚ˜Ú¯ÛŒ</th>
+                <th class="border p-2 text-left">Ù…Ù‚Ø¯Ø§Ø±</th>
               </tr>
             </thead>
 
@@ -181,36 +182,27 @@
       {% endif %}
     </div>
       
+      <!-- حالت پیشرفته: وقتی premium یا super فعال است -->
       {% if PREMIUM_FEATURES or SUPER_FEATURES %}
       <div class="flex gap-2 mt-3 md:mt-4 w-full md:w-auto">
         
-        <!-- 
-          🔧 TODO (Backend Developer):
-          - مدل: ProductFavorite (user, product, created_at)
-          - ویو: add/remove favorite
-          - فقط در نسخه پرمیوم و سوپر فعال باشد
-        -->
+        
         <button 
           class="flex-1 md:flex-none border-2 border-color-light text-color-light py-2 px-4 rounded-lg hover:bg-color-light hover:text-white transition text-sm md:text-base flex items-center justify-center gap-1"
-          onclick="alert('قابلیت علاقه‌مندی - در حال توسعه')"
+          onclick="alert('Ù‚Ø§Ø¨Ù„ÛŒØª Ø¹Ù„Ø§Ù‚Ù‡â€ŒÙ…Ù†Ø¯ÛŒ - Ø¯Ø± Ø­Ø§Ù„ ØªÙˆØ³Ø¹Ù‡')"
           type="button"
         >
-          ❤️ علاقه‌مندی
+          â¤ï¸ Ø¹Ù„Ø§Ù‚Ù‡â€ŒÙ…Ù†Ø¯ÛŒ
           <span class="bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-[10px] md:text-xs px-1.5 py-0.5 rounded font-bold">VIP</span>
         </button>
         
-        <!-- 
-          🔧 TODO (Backend Developer):
-          - تولید لینک کوتاه برای محصول
-          - اشتراک در شبکه‌های اجتماعی
-          - فقط در نسخه پرمیوم و سوپر فعال باشد
-        -->
+        
         <button 
           class="flex-1 md:flex-none border-2 border-gray-300 text-gray-600 py-2 px-4 rounded-lg hover:border-color-light hover:text-color-light transition text-sm md:text-base flex items-center justify-center gap-1"
-          onclick="alert('قابلیت اشتراک‌گذاری - در حال توسعه')"
+          onclick="alert('Ù‚Ø§Ø¨Ù„ÛŒØª Ø§Ø´ØªØ±Ø§Ú©â€ŒÚ¯Ø°Ø§Ø±ÛŒ - Ø¯Ø± Ø­Ø§Ù„ ØªÙˆØ³Ø¹Ù‡')"
           type="button"
         >
-          🔗 اشتراک
+          ðŸ”— Ø§Ø´ØªØ±Ø§Ú©
           <span class="bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-[10px] md:text-xs px-1.5 py-0.5 rounded font-bold">VIP</span>
         </button>
         
@@ -318,24 +310,20 @@
 </script>
 {% endif %}
 
-<!-- جاوااسکریپت انتخاب رنگ -->
+
 <script>
 function selectProductColor(btn) {
-  // حذف انتخاب قبلی
   document.querySelectorAll('.color-option').forEach(el => {
     el.classList.remove('border-color-light', 'bg-gray-50');
     el.classList.add('border-gray-200');
   });
   
-  // انتخاب جدید
   btn.classList.remove('border-gray-200');
   btn.classList.add('border-color-light', 'bg-gray-50');
   
-  // ذخیره در فیلد مخفی
   const colorId = btn.getAttribute('data-color-id');
   document.getElementById('selected-color-id').value = colorId;
   
-  // افکت بصری
   btn.animate([
     { transform: 'scale(1)' },
     { transform: 'scale(1.05)' },
@@ -346,7 +334,6 @@ function selectProductColor(btn) {
 function addToCart(productId) {
   const colorId = document.getElementById('selected-color-id')?.value;
   
-  // نمایش رنگ انتخابی
   let colorName = '';
   if (colorId) {
     const selectedBtn = document.querySelector(`.color-option[data-color-id="${colorId}"]`);
@@ -355,31 +342,11 @@ function addToCart(productId) {
     }
   }
   
-  alert(`محصول به سبد خرید اضافه شد!${colorName ? '\nرنگ: ' + colorName : ''}`);
+  alert(`Ù…Ø­ØµÙˆÙ„ Ø¨Ù‡ Ø³Ø¨Ø¯ Ø®Ø±ÛŒØ¯ Ø§Ø¶Ø§ÙÙ‡ Ø´Ø¯!${colorName ? '\nØ±Ù†Ú¯: ' + colorName : ''}`);
   
-  // کد واقعی برای ارسال به سرور
-  /*
-  fetch('/cart/add/', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRFToken': getCookie('csrftoken')
-    },
-    body: JSON.stringify({ 
-      product_id: productId,
-      color_id: colorId 
-    })
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      alert('محصول به سبد خرید اضافه شد!');
-    }
-  });
-  */
+  
 }
 
-// تابع کمکی برای CSRF Token
 function getCookie(name) {
   let cookieValue = null;
   if (document.cookie) {
@@ -410,19 +377,18 @@ function addToCart(productId) {
   .then(response => response.json())
   .then(data => {
     if (data.success) {
-      alert('✅ محصول به سبد اضافه شد!');
+      alert('âœ… Ù…Ø­ØµÙˆÙ„ Ø¨Ù‡ Ø³Ø¨Ø¯ Ø§Ø¶Ø§ÙÙ‡ Ø´Ø¯!');
     } else {
-      alert('❌ خطا در افزودن به سبد');
+      alert('âŒ Ø®Ø·Ø§ Ø¯Ø± Ø§ÙØ²ÙˆØ¯Ù† Ø¨Ù‡ Ø³Ø¨Ø¯');
     }
   })
   .catch(error => {
     console.error('Error:', error);
-    alert('❌ خطا در ارتباط با سرور');
+    alert('âŒ Ø®Ø·Ø§ Ø¯Ø± Ø§Ø±ØªØ¨Ø§Ø· Ø¨Ø§ Ø³Ø±ÙˆØ±');
   });
 }
 
 
-// تابع انتخاب رنگ
 function selectProductColor(btn) {
   document.querySelectorAll('.color-option').forEach(el => {
     el.classList.remove('border-color-light', 'bg-gray-50');
@@ -436,7 +402,6 @@ function selectProductColor(btn) {
   document.getElementById('selected-color-id').value = colorId;
 }
 
-// تابع CSRF
 function getCookie(name) {
   let cookieValue = null;
   if (document.cookie && document.cookie !== '') {
@@ -452,7 +417,6 @@ function getCookie(name) {
   return cookieValue;
 }
 
-// تابع افزودن به سبد (فقط یک بار!)
 function addToCart(productId) {
   const colorId = document.getElementById('selected-color-id')?.value || '';
   const csrftoken = getCookie('csrftoken');
@@ -472,27 +436,27 @@ function addToCart(productId) {
     console.log('Response status:', response.status);
     
     if (response.status === 403) {
-      throw new Error('لطفاً ابتدا وارد شوید');
+      throw new Error('Ù„Ø·ÙØ§Ù‹ Ø§Ø¨ØªØ¯Ø§ ÙˆØ§Ø±Ø¯ Ø´ÙˆÛŒØ¯');
     }
     
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Server error:', errorText);
-      throw new Error(`خطای سرور: ${response.status}`);
+      throw new Error(`Ø®Ø·Ø§ÛŒ Ø³Ø±ÙˆØ±: ${response.status}`);
     }
     return response.json();
   })
   .then(data => {
     console.log('Success:', data);
     if (data.success) {
-      alert('✅ محصول به سبد اضافه شد!');
+      alert('âœ… Ù…Ø­ØµÙˆÙ„ Ø¨Ù‡ Ø³Ø¨Ø¯ Ø§Ø¶Ø§ÙÙ‡ Ø´Ø¯!');
     } else {
-      alert('❌ ' + (data.message || 'خطا در افزودن به سبد'));
+      alert('âŒ ' + (data.message || 'Ø®Ø·Ø§ Ø¯Ø± Ø§ÙØ²ÙˆØ¯Ù† Ø¨Ù‡ Ø³Ø¨Ø¯'));
     }
   })
   .catch(error => {
     console.error('Error:', error);
-    alert('❌ ' + error.message);
+    alert('âŒ ' + error.message);
   });
 }
 </script>

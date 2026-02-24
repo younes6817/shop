@@ -1,4 +1,4 @@
-<!-- app_banner/templates/app_banner/banner.html -->
+﻿
 <div class="mb-6">
   {% for banner in banners %}
   <div class="relative w-full mb-4 rounded-xl overflow-hidden">
@@ -11,7 +11,7 @@
     {% elif banner.image_url %}
       <img src="{{ banner.image_url }}" alt="{{ banner.title }}" class="w-full h-auto object-cover">
     {% else %}
-      <div class="bg-gray-200 w-full h-48 flex items-center justify-center">🖼️ {{ banner.title }}</div>
+      <div class="bg-gray-200 w-full h-48 flex items-center justify-center">ðŸ–¼ï¸ {{ banner.title }}</div>
     {% endif %}
 
     {% if banner.title %}

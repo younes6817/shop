@@ -51,3 +51,4 @@ class CartItem(models.Model):
         persian_digits = "۰۱۲۳۴۵۶۷۸۹"
         value = "{:,}".format(int(self.total_price))
         return "".join(persian_digits[int(ch)] if ch.isdigit() else ch for ch in value)
+

@@ -1,4 +1,4 @@
-from django.urls import path
+﻿from django.urls import path
 from . import views
 
 app_name = 'user'
@@ -10,3 +10,4 @@ urlpatterns = [
     path('delete-account/', views.delete_account_view, name='delete_account'),
     path('', views.main_view, name='profile'),
 ]
+
