@@ -9,8 +9,8 @@
   <script src="{% static 'js/tailwind.js' %}"></script>
   <style>
     :root {
-      --primary-color: #3b82f6;
-      --primary-dark: #2563eb;
+      --primary-color: #6b6b6b;
+      --primary-dark: #000000;
     }
     .text-color-light { color: var(--primary-color); }
     .text-discount-dark { color: var(--primary-dark); }
@@ -115,6 +115,74 @@
         });
       }
     });
+
+  // تابع CSRF Token
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  // تابع حذف از سبد خرید
+  function removeFromCart(itemId, event) {
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    
+    if (!confirm('آیا مطمئن هستید؟')) return;
+    
+    console.log('🗑 Removing item:', itemId);
+    
+    const csrftoken = getCookie('csrftoken');
+    
+    fetch(`/cart/remove/${itemId}/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-CSRFToken': csrftoken || '',
+        'X-Requested-With': 'XMLHttpRequest'
+      }
+    })
+    .then(async res => {
+      console.log('📡 Status:', res.status);
+      
+      if (res.status === 403) {
+        alert('لطفاً وارد شوید');
+        window.location.href = '/admin/login/';
+        return;
+      }
+      
+      if (!res.ok) {
+        const txt = await res.text();
+        console.error('❌ Server:', txt);
+        throw new Error('خطای سرور: ' + res.status);
+      }
+      return res.json();
+    })
+    .then(data => {
+      console.log('✅ Response:', data);
+      if (data?.success) {
+        location.reload();
+      } else {
+        alert('❌ ' + (data?.message || 'خطا در حذف'));
+      }
+    })
+    .catch(err => {
+      console.error('💥 Error:', err);
+      alert('❌ ' + err.message);
+    });
+}
+
   </script>
 </body>
 </html>

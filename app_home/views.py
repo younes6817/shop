@@ -1,45 +1,48 @@
 from django.shortcuts import render
-from app_product.models import Product
-from app_category.models import Category
+
 from app_banner.models import Banner
+from app_product.models import Product
+
 
 def home_view(request):
-    # دریافت پارامترها
-    query = request.GET.get('q')
-    category_id = request.GET.get('category')
+    query = (request.GET.get("q") or "").strip()
+    category_id = (request.GET.get("category") or "").strip()
 
-    # پایه: فقط محصولات فعال
     products = Product.objects.filter(is_active=True)
 
-    # فیلتر بر اساس جستجو
     if query:
         products = products.filter(name__icontains=query)
 
-    # فیلتر بر اساس دسته‌بندی
-    if category_id:
-        products = products.filter(category_id=category_id)
-
-    # پرفروش‌ها (فقط اگر فیلتر نشده باشن)
-    if not query and not category_id:
-        bestsellers = products.filter(sold_count__gt=0).order_by('-sold_count')[:10]
-        if not bestsellers:
-            bestsellers = products.order_by('-created_at')[:10]
-        
-        # پیشنهاد ویژه (تخفیف ≥ 20%)
-        special_offers = products.filter(discount_percent__gte=20)
+    # فقط وقتی category عدد معتبر باشد فیلتر را اعمال می‌کنیم.
+    if category_id.isdigit():
+        products = products.filter(category_id=int(category_id))
     else:
-        bestsellers = []
-        special_offers = []
+        category_id = ""
 
-    categories = Category.objects.all()
-    banners = Banner.objects.all().order_by('position')
+    # وقتی فیلتر/جستجو فعال است، سکشن‌های صفحه اصلی نباید نمایش داده شوند.
+    show_home_extras = not query and not category_id
 
-    return render(request, 'home.html', {
-        'banners': banners,
-        'products': products,
-        'bestsellers': bestsellers,
-        'special_offers': special_offers,  # ← این خط اضافه شد
-        'categories': categories,
-        'query': query,
-        'selected_category': category_id,
-    })
+    if show_home_extras:
+        bestsellers = products.filter(sold_count__gt=0).order_by("-sold_count")[:10]
+        if not bestsellers:
+            bestsellers = products.order_by("-created_at")[:10]
+        special_offers = products.filter(discount_percent__gte=20)
+        banners = Banner.objects.all().order_by("position")
+    else:
+        bestsellers = Product.objects.none()
+        special_offers = Product.objects.none()
+        banners = []
+
+    return render(
+        request,
+        "home.html",
+        {
+            "banners": banners,
+            "products": products,
+            "bestsellers": bestsellers,
+            "special_offers": special_offers,
+            "query": query,
+            "selected_category": category_id,
+            "show_home_extras": show_home_extras,
+        },
+    )

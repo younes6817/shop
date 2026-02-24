@@ -150,7 +150,9 @@
       {% endif %}
 
       <button 
+        id="add-to-cart-btn"
         class="w-full md:w-auto bg-color-light text-white py-2 md:py-3 px-6 md:px-8 rounded-lg hover:bg-color-dark transition font-bold text-sm md:text-base"
+        type="button"
         onclick="addToCart({{ product.id }})"
       >
         🛒 افزودن به سبد خرید
@@ -391,6 +393,107 @@ function getCookie(name) {
     }
   }
   return cookieValue;
+}
+
+
+function addToCart(productId) {
+  const colorId = document.getElementById('selected-color-id')?.value || null;
+  
+  fetch("{% url 'cart:add_to_cart' %}", {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'X-CSRFToken': getCookie('csrftoken')
+    },
+    body: `product_id=${productId}&color_id=${colorId || ''}`
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      alert('✅ محصول به سبد اضافه شد!');
+    } else {
+      alert('❌ خطا در افزودن به سبد');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('❌ خطا در ارتباط با سرور');
+  });
+}
+
+
+// تابع انتخاب رنگ
+function selectProductColor(btn) {
+  document.querySelectorAll('.color-option').forEach(el => {
+    el.classList.remove('border-color-light', 'bg-gray-50');
+    el.classList.add('border-gray-200');
+  });
+  
+  btn.classList.remove('border-gray-200');
+  btn.classList.add('border-color-light', 'bg-gray-50');
+  
+  const colorId = btn.getAttribute('data-color-id');
+  document.getElementById('selected-color-id').value = colorId;
+}
+
+// تابع CSRF
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+// تابع افزودن به سبد (فقط یک بار!)
+function addToCart(productId) {
+  const colorId = document.getElementById('selected-color-id')?.value || '';
+  const csrftoken = getCookie('csrftoken');
+  
+  console.log('Adding to cart:', { productId, colorId });
+  
+  fetch("/cart/add/", {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'X-CSRFToken': csrftoken,
+      'X-Requested-With': 'XMLHttpRequest'
+    },
+    body: `product_id=${productId}&color_id=${colorId}`
+  })
+  .then(async response => {
+    console.log('Response status:', response.status);
+    
+    if (response.status === 403) {
+      throw new Error('لطفاً ابتدا وارد شوید');
+    }
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Server error:', errorText);
+      throw new Error(`خطای سرور: ${response.status}`);
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log('Success:', data);
+    if (data.success) {
+      alert('✅ محصول به سبد اضافه شد!');
+    } else {
+      alert('❌ ' + (data.message || 'خطا در افزودن به سبد'));
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('❌ ' + error.message);
+  });
 }
 </script>
 {% endblock %}

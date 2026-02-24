@@ -1,7 +1,29 @@
 {% extends "base.html" %}
 {% block title %}{{ SHOP_NAME }} - سبد خرید{% endblock %}
 {% block content %}
-    {% for item in cart_items %}
-        {% include 'app_product/product_card.html' with product=item.product card_layout='horizontal' %}
-    {% endfor %}
+<div class="container mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-6 text-center">سبد خرید</h1>
+
+    {% if cart_items %}
+        <div class="space-y-4">
+            {% for item in cart_items %}
+                <a href="{% url 'product:product' item.product.pk %}" class="block">
+                    {% include "app_product/product_card.html" with product=item.product item=item card_layout='horizontal' %}
+                </a>
+            {% endfor %}
+        </div>
+        <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+            <div class="flex justify-between items-center">
+                <span class="text-lg font-bold">جمع کل:</span>
+                <span class="text-2xl font-bold text-color-light">{{ total_price }}</span>
+            </div>
+        </div>
+
+        <div class="mt-6 flex gap-4">
+            <a href="{% url 'home:home' %}" class="flex-1 py-3 px-6 border-2 border-color-light text-color-light rounded-lg text-center font-bold hover:bg-color-light hover:text-white transition">
+                ادامه خرید
+            </a>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

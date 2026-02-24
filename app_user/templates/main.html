@@ -1,32 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    {% load static %}
-  <!-- Tailwind -->
-  <script src="{% static 'js/tailwind.js' %}"></script>
-  <style>
-    :root {
-    --primary-color: #3b82f6;
-    --primary-dark: #2563eb;
-  }
+{% extends "base.html" %}
+{% block title %}{{ SHOP_NAME }} - حساب کاربری{% endblock %}
 
+{% block content %}
+<div class="max-w-md mx-auto py-4 space-y-4">
 
-  .text-color-light { color: var(--primary-color); }
-  .text-discount-dark{ color: var(--primary-dark); }
-  .bg-color-light { background-color: var(--primary-color); }
-  .bg-color-dark { background-color: var(--primary-dark); }
-  
-  </style>
-</head>
-<body>
-    <div class="border-b text-gray-500">
-      <p class="text-l right">{{ user.first_name}} {{ user.last_name }}</p>
-      <p class="text-l right">{{ user.phone }}</p>
-      <a href="#" class="text-l left">✎ ویرایش جساب کاربری</a>
-       
-    </div>
-</body>
-</html>
+  {% if user.is_authenticated %}
+    <!-- کارت اصلی حساب کاربر -->
+    <section class="relative overflow-hidden rounded-2xl bg-color-light text-white p-5 shadow">
+      <!-- شکل دایره پس‌زمینه برای جذابیت بصری -->
+      <div class="absolute -top-8 -left-8 w-28 h-28 rounded-full bg-white/20"></div>
+      <!-- شکل مربع چرخیده در پس‌زمینه -->
+      <div class="absolute -bottom-10 -right-6 w-24 h-24 rotate-12 rounded-2xl bg-white/15"></div>
+
+      <div class="relative z-10 flex items-center gap-4">
+        <!-- آیکن بزرگ کاربر -->
+        <div class="w-16 h-16 rounded-full bg-white/25 flex items-center justify-center text-3xl">👤</div>
+        <div>
+          <!-- اگر نام خالی بود، شماره موبایل نمایش داده می‌شود -->
+          <h1 class="text-xl font-extrabold">
+            {% if user.get_full_name %}
+              {{ user.get_full_name }}
+            {% else %}
+              {{ user.phone }}
+            {% endif %}
+          </h1>
+          <p class="text-sm text-white/90">{{ user.phone }}</p>
+          {% if user.email %}
+            <p class="text-sm text-white/80">{{ user.email }}</p>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+
+    <!-- گزینه‌های تنظیمات حساب -->
+    <section class="bg-white rounded-2xl shadow p-3">
+      <h2 class="text-sm font-bold text-gray-800 mb-3">تنظیمات حساب</h2>
+      <div class="space-y-2">
+        {% for option in profile_options %}
+          <a href="{{ option.href }}" class="block rounded-xl border border-gray-100 p-3 hover:bg-gray-50 transition">
+            <p class="text-sm font-semibold text-gray-800">{{ option.title }}</p>
+            <p class="text-xs text-gray-500 mt-1">{{ option.subtitle }}</p>
+          </a>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- اکشن‌های حساس حساب: خروج و حذف -->
+    <section class="bg-white rounded-2xl shadow p-3 space-y-2">
+      <form method="post" action="{% url 'user:logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-color-light hover:bg-color-dark text-white font-semibold transition">
+          خروج از حساب
+        </button>
+      </form>
+
+      <form method="post" action="{% url 'user:delete_account' %}" onsubmit="return confirm('از حذف حساب مطمئن هستید؟ این عملیات قابل بازگشت نیست.');">
+        {% csrf_token %}
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-red-600 text-white font-semibold">
+          حذف حساب کاربری
+        </button>
+      </form>
+    </section>
+  {% else %}
+    <!-- حالت کاربر لاگین‌نشده -->
+    <section class="rounded-2xl bg-white shadow p-5 text-center">
+      <div class="w-16 h-16 rounded-full bg-gray-100 mx-auto mb-3 flex items-center justify-center text-2xl">🔐</div>
+      <h1 class="text-lg font-bold text-gray-800">حساب کاربری</h1>
+      <p class="text-sm text-gray-500 mt-2">برای استفاده از امکانات حساب کاربری باید وارد شوید.</p>
+
+      <div class="mt-4">
+        <a href="{% url 'user:login' %}" class="inline-block px-5 py-2.5 rounded-xl bg-color-light hover:bg-color-dark text-white font-semibold transition">
+          ورود به حساب
+        </a>
+      </div>
+    </section>
+  {% endif %}
+</div>
+{% endblock %}

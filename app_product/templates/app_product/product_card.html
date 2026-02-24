@@ -1,79 +1,99 @@
 {% if card_layout == 'vertical' %}
   <div class="bg-white rounded-lg shadow overflow-hidden flex flex-col min-h-[180px]">
-    <!-- عکس -->
     <div class="w-full h-40 bg-gray-100 flex items-center justify-center">
-        <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover">
+      {% with first_image=product.images.first %}
+        {% if first_image %}
+          <img src="{{ first_image.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover">
+        {% else %}
+          <span class="text-xs text-gray-500">بدون تصویر</span>
+        {% endif %}
+      {% endwith %}
     </div>
 
-    <!-- محتوا -->
     <div class="p-2 flex-grow flex flex-col justify-between">
       <h3 class="font-bold text-xs line-clamp-2">{{ product.name }}</h3>
 
       {% if product.discount_percent > 0 %}
         <div class="flex items-center justify-between mt-1">
           <p class="text-discount-dark text-xs line-through">
-            {{ product.price|floatformat:0 }} تومان
+            {{ product.persian_price }} تومان
           </p>
           <span class="bg-color-dark text-white text-xs font-bold px-2 py-0.5 rounded whitespace-nowrap">
             {{ product.discount_percent }}%
           </span>
         </div>
         <p class="text-color-light font-bold text-xs mt-1">
-          {{ product.final_price|floatformat:0 }} تومان
+          {{ product.persian_final_price }} تومان
         </p>
       {% else %}
-        <!-- فضای خالی برای هماهنگی -->
         <div class="h-6"></div>
         <p class="text-color-light font-bold text-xs mt-1">
-          {{ product.price|floatformat:0 }} تومان
+          {{ product.persian_price }} تومان
         </p>
       {% endif %}
 
       {% if product.stock == 0 %}
-        <p class="text-red-500 text-xs mt-1">نا موجود</p>
+        <p class="text-red-500 text-xs mt-1">ناموجود</p>
       {% endif %}
     </div>
   </div>
 
 {% elif card_layout == 'horizontal' %}
-  <div class="flex w-full h-24 bg-white rounded-lg shadow overflow-hidden">
-    <!-- عکس (سمت چپ) -->
+  <div class="flex w-full min-h-24 bg-white rounded-lg shadow overflow-hidden">
     <div class="w-24 h-full bg-gray-100 flex items-center justify-center flex-shrink-0">
-      <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover">
+      {% with first_image=product.images.first %}
+        {% if first_image %}
+          <img src="{{ first_image.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover">
+        {% else %}
+          <span class="text-xs text-gray-500">بدون تصویر</span>
+        {% endif %}
+      {% endwith %}
     </div>
 
-    <!-- محتوا (سمت راست) -->
     <div class="flex-1 flex flex-col justify-between p-2 text-right">
-      <!-- نام محصول (بالا) -->
       <h3 class="font-bold text-sm line-clamp-1">{{ product.name }}</h3>
-      
-      <!-- قیمت و تخفیف (پایین) -->
+
+      {% if item %}
+        <div class="flex items-center justify-end">
+          <span class="text-xs bg-gray-100 text-gray-700 px-2 py-0.5 rounded">
+            تعداد: {{ item.quantity }}
+          </span>
+        </div>
+      {% endif %}
+
       <div class="flex items-center gap-2 justify-end">
         {% if product.discount_percent > 0 %}
           <p class="text-gray-400 text-xs line-through">
-            {{ product.price|floatformat:0 }}
+            {{ product.persian_price }}
           </p>
           <span class="bg-color-dark text-white text-xs font-bold px-1.5 py-0.5 rounded">
             {{ product.discount_percent }}%
           </span>
           <p class="text-color-light font-bold text-sm">
-            {{ product.final_price|floatformat:0 }} تومان
+            {{ product.persian_final_price }} تومان
           </p>
         {% else %}
           <p class="text-color-light font-bold text-sm">
-            {{ product.price|floatformat:0 }} تومان
+            {{ product.persian_price }} تومان
           </p>
         {% endif %}
       </div>
+
+      {% if item %}
+        <p class="text-xs text-gray-500">
+          جمع این کالا: {{ item.persian_total_price }} تومان
+        </p>
+      {% endif %}
     </div>
 
-    <!-- دکمه حذف (گوشه چپ) -->
-    <button 
-      type="button"
-      class="flex items-center justify-center px-3 text-red-600 hover:text-red-800 hover:bg-red-50 transition"
-      onclick="removeFromCart({{ product.id }})"
-    >
-      🗑
-    </button>
+    {% if item %}
+      <button
+        type="button"
+        class="flex items-center justify-center px-3 text-red-600 hover:text-red-800 hover:bg-red-50 transition"
+        onclick="removeFromCart({{ item.id }}, event)"
+      >
+        🗑
+      </button>
+    {% endif %}
   </div>
 {% endif %}
