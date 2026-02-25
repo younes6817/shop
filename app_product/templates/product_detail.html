@@ -1,252 +1,159 @@
-﻿{% extends "base.html" %}
+{% extends "base.html" %}
 {% block title %}{{ product.name }}{% endblock %}
 
 {% block content %}
 <div class="container mx-auto p-4">
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-    
-    
     <div class="relative">
-      
-      
       <!-- حالت عادی: وقتی premium/super فعال نیست -->
       {% if not PREMIUM_FEATURES and not SUPER_FEATURES %}
-      <div class="relative w-full overflow-hidden rounded-xl bg-gray-100 flex items-center justify-center" style="min-height: 256px;">
-        {% if product.images.first %}
-        <img 
-          src="{{ product.images.first.image.url }}" 
-          alt="{{ product.name }}"
-          class="w-full h-auto max-h-[400px] object-contain"
-        >
-        {% else %}
-        <div class="w-full h-64 flex items-center justify-center bg-gray-200">
-          <span class="text-gray-400 text-4xl">ðŸ“·</span>
+        <div class="relative w-full overflow-hidden rounded-xl bg-gray-100 flex items-center justify-center" style="min-height: 256px;">
+          {% if product.images.first %}
+            <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}" class="w-full h-auto max-h-[400px] object-contain">
+          {% else %}
+            <div class="w-full h-64 flex items-center justify-center bg-gray-200">
+              <span class="text-gray-400 text-4xl">📷</span>
+            </div>
+          {% endif %}
         </div>
-        {% endif %}
-      </div>
-      
-      
       {% else %}
-      <div class="relative w-full overflow-hidden rounded-xl bg-gray-100 flex items-center justify-center" style="min-height: 256px;">
-        
-        <div id="slider-container" class="flex w-full" style="transition: transform 0.5s ease-in-out;">
-          
-          {% for image in product.images.all %}
-          <div class="slide-item w-full flex-shrink-0 flex items-center justify-center" style="min-width: 100%;">
-            <img 
-              src="{{ image.image.url }}" 
-              alt="{{ product.name }}"
-              class="w-full h-auto max-h-[400px] object-contain"
-            >
+        <div class="relative w-full overflow-hidden rounded-xl bg-gray-100 flex items-center justify-center" style="min-height: 256px;">
+          <div id="slider-container" class="flex w-full" style="transition: transform 0.5s ease-in-out;">
+            {% for image in product.images.all %}
+              <div class="slide-item w-full flex-shrink-0 flex items-center justify-center" style="min-width: 100%;">
+                <img src="{{ image.image.url }}" alt="{{ product.name }}" class="w-full h-auto max-h-[400px] object-contain">
+              </div>
+            {% empty %}
+              <div class="w-full h-64 flex items-center justify-center bg-gray-200">
+                <span class="text-gray-400 text-4xl">📷</span>
+              </div>
+            {% endfor %}
           </div>
-          {% empty %}
-          <div class="w-full h-64 flex items-center justify-center bg-gray-200">
-            <span class="text-gray-400 text-4xl">ðŸ“·</span>
-          </div>
-          {% endfor %}
-          
         </div>
-      </div>
 
-      {% if product.images.count > 1 %}
-      <button 
-        id="prev-btn"
-        class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center hover:bg-black/70 transition z-10"
-        type="button"
-      >
-        â€¹
-      </button>
+        {% if product.images.count > 1 %}
+          <button id="prev-btn" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center hover:bg-black/70 transition z-10" type="button">‹</button>
+          <button id="next-btn" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center hover:bg-black/70 transition z-10" type="button">›</button>
 
-      <button 
-        id="next-btn"
-        class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center hover:bg-black/70 transition z-10"
-        type="button"
-      >
-        â€º
-      </button>
-
-      <div class="flex justify-center gap-2 mt-3" id="dots-container">
-        {% for image in product.images.all %}
-        <button 
-          type="button"
-          class="dot-btn w-2 h-2 md:w-3 md:h-3 rounded-full transition"
-          data-index="{{ forloop.counter0 }}"
-          style="background-color: {% if forloop.first %}var(--primary-color){% else %}#d1d5db{% endif %};"
-        ></button>
-        {% endfor %}
-      </div>
+          <div class="flex justify-center gap-2 mt-3" id="dots-container">
+            {% for image in product.images.all %}
+              <button type="button" class="dot-btn w-2 h-2 md:w-3 md:h-3 rounded-full transition" data-index="{{ forloop.counter0 }}" style="background-color: {% if forloop.first %}var(--primary-color){% else %}#d1d5db{% endif %};"></button>
+            {% endfor %}
+          </div>
+        {% endif %}
       {% endif %}
-      {% endif %}
-
     </div>
 
-    
     <div class="flex flex-col justify-center md:items-start items-center text-center md:text-right">
       <h1 class="text-lg md:text-2xl font-bold text-gray-800 mb-2 md:mb-3">{{ product.name }}</h1>
-      
-      
+
       <div class="flex items-center gap-2 md:gap-4 mb-3 md:mb-4 flex-wrap justify-center md:justify-start w-full">
-        
         {% if product.discount_percent and product.discount_percent > 0 %}
-          
-          <span class="text-sm md:text-lg text-gray-400 line-through">
-            {{ product.persian_price }} ØªÙˆÙ…Ø§Ù†
-          </span>
-          
-          
-          <span class="bg-color-dark text-white px-2 py-1 rounded text-xs md:text-sm">
-            {{ product.discount_percent }}% ØªØ®ÙÛŒÙ
-          </span>
-          
-          
-          <span class="text-xl md:text-3xl font-bold text-color-light">
-            {{ product.persian_final_price }} ØªÙˆÙ…Ø§Ù†
-          </span>
+          <span class="text-sm md:text-lg text-gray-400 line-through">{{ product.persian_price }} تومان</span>
+          <span class="bg-color-dark text-white px-2 py-1 rounded text-xs md:text-sm">{{ product.discount_percent }}% تخفیف</span>
+          <span class="text-xl md:text-3xl font-bold text-color-light">{{ product.persian_final_price }} تومان</span>
         {% else %}
-          
-          <span class="text-xl md:text-3xl font-bold text-color-light">
-            {{ product.persian_price }} ØªÙˆÙ…Ø§Ù†
-          </span>
+          <span class="text-xl md:text-3xl font-bold text-color-light">{{ product.persian_price }} تومان</span>
         {% endif %}
-        
       </div>
 
       <p class="text-sm md:text-base text-gray-600 mb-4 md:mb-6 w-full">
-        {{ product.description|default:"ØªÙˆØ¶ÛŒØ­Ø§ØªÛŒ ÙˆØ¬ÙˆØ¯ Ù†Ø¯Ø§Ø±Ø¯" }}
+        {{ product.description|default:"توضیحاتی وجود ندارد" }}
       </p>
 
-      
       {% if product.has_colors %}
-      <div class="mb-4 md:mb-6 w-full flex justify-center md:justify-start">
-        <div class="flex flex-wrap gap-2 w-full">
-          {% for color_option in product.colors.all %}
-          <button 
-            type="button"
-            class="color-option flex items-center gap-2 px-3 py-2 rounded-full border-2 transition cursor-pointer
-                   {% if color_option.is_default %}border-color-light bg-gray-50{% else %}border-gray-200 hover:border-color-light{% endif %}"
-            data-color-id="{{ color_option.id }}"
-            data-color-name="{{ color_option.color_name }}"
-            onclick="selectProductColor(this)"
-          >
-            
-            <span 
-              class="w-5 h-5 md:w-6 md:h-6 rounded-full border border-gray-300 shadow-sm flex-shrink-0"
-              style="background-color: {{ color_option.color }};"
-            ></span>
-            
-            <span class="text-sm md:text-base text-gray-700 font-medium">
-              {{ color_option.color_name }}
-            </span>
-            
-            {% if color_option.stock == 0 %}
-            <span class="text-xs text-red-500">(Ù†Ø§Ù…ÙˆØ¬ÙˆØ¯)</span>
-            {% endif %}
-          </button>
-          {% endfor %}
+        <div class="mb-4 md:mb-6 w-full flex justify-center md:justify-start">
+          <div class="flex flex-wrap gap-2 w-full">
+            {% for color_option in product.colors.all %}
+              <button
+                type="button"
+                class="color-option flex items-center gap-2 px-3 py-2 rounded-full border-2 transition cursor-pointer {% if color_option.is_default %}border-color-light bg-gray-50{% else %}border-gray-200 hover:border-color-light{% endif %}"
+                data-color-id="{{ color_option.id }}"
+                data-color-name="{{ color_option.color_name }}"
+                onclick="selectProductColor(this)"
+              >
+                <span class="w-5 h-5 md:w-6 md:h-6 rounded-full border border-gray-300 shadow-sm flex-shrink-0" style="background-color: {{ color_option.color }};"></span>
+                <span class="text-sm md:text-base text-gray-700 font-medium">{{ color_option.color_name }}</span>
+                {% if color_option.stock == 0 %}
+                  <span class="text-xs text-red-500">(ناموجود)</span>
+                {% endif %}
+              </button>
+            {% endfor %}
+          </div>
         </div>
-      </div>
-      
-      
-      <input type="hidden" id="selected-color-id" name="color_id" value="{{ product.colors.first.id }}">
+        <input type="hidden" id="selected-color-id" name="color_id" value="{{ product.colors.first.id }}">
       {% endif %}
 
-      <button 
-        id="add-to-cart-btn"
-        class="w-full md:w-auto bg-color-light text-white py-2 md:py-3 px-6 md:px-8 rounded-lg hover:bg-color-dark transition font-bold text-sm md:text-base"
-        type="button"
-        onclick="addToCart({{ product.id }})"
-      >
-        ðŸ›’ Ø§ÙØ²ÙˆØ¯Ù† Ø¨Ù‡ Ø³Ø¨Ø¯ Ø®Ø±ÛŒØ¯
+      <button id="add-to-cart-btn" class="w-full md:w-auto bg-color-light text-white py-2 md:py-3 px-6 md:px-8 rounded-lg hover:bg-color-dark transition font-bold text-sm md:text-base" type="button" onclick="addToCart({{ product.id }})">
+        🛒 افزودن به سبد خرید
       </button>
+
       <div class="mt-6 w-full">
         {% if product_spec %}
-          <h3 class="text-lg font-bold mb-2">Ù…Ø´Ø®ØµØ§Øª Ù…Ø­ØµÙˆÙ„</h3>
+          <h3 class="text-lg font-bold mb-2">مشخصات محصول</h3>
           <table class="w-full border-collapse">
             <thead>
               <tr>
-                <th class="border p-2 text-right">ÙˆÛŒÚ˜Ú¯ÛŒ</th>
-                <th class="border p-2 text-left">Ù…Ù‚Ø¯Ø§Ø±</th>
+                <th class="border p-2 text-right">ویژگی</th>
+                <th class="border p-2 text-left">مقدار</th>
               </tr>
             </thead>
-
-          <tbody>
+            <tbody>
               {% for spec in product_spec %}
                 <tr>
                   <td class="border text-gray-700 text-right">{{ spec.key }}</td>
                   <td class="border text-gray-700 text-left">{{ spec.value }}</td>
                 </tr>
               {% endfor %}
-            </div>
-          </tbody>
-        </table>
-      {% endif %}
-    </div>
-      
+            </tbody>
+          </table>
+        {% endif %}
+      </div>
+
       <!-- حالت پیشرفته: وقتی premium یا super فعال است -->
       {% if PREMIUM_FEATURES or SUPER_FEATURES %}
-      <div class="flex gap-2 mt-3 md:mt-4 w-full md:w-auto">
-        
-        
-        <button 
-          class="flex-1 md:flex-none border-2 border-color-light text-color-light py-2 px-4 rounded-lg hover:bg-color-light hover:text-white transition text-sm md:text-base flex items-center justify-center gap-1"
-          onclick="alert('Ù‚Ø§Ø¨Ù„ÛŒØª Ø¹Ù„Ø§Ù‚Ù‡â€ŒÙ…Ù†Ø¯ÛŒ - Ø¯Ø± Ø­Ø§Ù„ ØªÙˆØ³Ø¹Ù‡')"
-          type="button"
-        >
-          â¤ï¸ Ø¹Ù„Ø§Ù‚Ù‡â€ŒÙ…Ù†Ø¯ÛŒ
-          <span class="bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-[10px] md:text-xs px-1.5 py-0.5 rounded font-bold">VIP</span>
-        </button>
-        
-        
-        <button 
-          class="flex-1 md:flex-none border-2 border-gray-300 text-gray-600 py-2 px-4 rounded-lg hover:border-color-light hover:text-color-light transition text-sm md:text-base flex items-center justify-center gap-1"
-          onclick="alert('Ù‚Ø§Ø¨Ù„ÛŒØª Ø§Ø´ØªØ±Ø§Ú©â€ŒÚ¯Ø°Ø§Ø±ÛŒ - Ø¯Ø± Ø­Ø§Ù„ ØªÙˆØ³Ø¹Ù‡')"
-          type="button"
-        >
-          ðŸ”— Ø§Ø´ØªØ±Ø§Ú©
-          <span class="bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-[10px] md:text-xs px-1.5 py-0.5 rounded font-bold">VIP</span>
-        </button>
-        
-      </div>
+        <div class="flex gap-2 mt-3 md:mt-4 w-full md:w-auto">
+          <button class="flex-1 md:flex-none border-2 border-color-light text-color-light py-2 px-4 rounded-lg hover:bg-color-light hover:text-white transition text-sm md:text-base flex items-center justify-center gap-1" onclick="alert('قابلیت علاقه‌مندی در حال توسعه است')" type="button">
+            ❤️ علاقه‌مندی
+            <span class="bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-[10px] md:text-xs px-1.5 py-0.5 rounded font-bold">VIP</span>
+          </button>
+          <button class="flex-1 md:flex-none border-2 border-gray-300 text-gray-600 py-2 px-4 rounded-lg hover:border-color-light hover:text-color-light transition text-sm md:text-base flex items-center justify-center gap-1" onclick="alert('قابلیت اشتراک‌گذاری در حال توسعه است')" type="button">
+            🔗 اشتراک
+            <span class="bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-[10px] md:text-xs px-1.5 py-0.5 rounded font-bold">VIP</span>
+          </button>
+        </div>
       {% endif %}
-
     </div>
-
   </div>
 </div>
 
 {% if PREMIUM_FEATURES or SUPER_FEATURES %}
 <script>
-(function() {
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initSlider);
+(function () {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initSlider);
   } else {
     initSlider();
   }
 
   function initSlider() {
-    const container = document.getElementById('slider-container');
+    const container = document.getElementById("slider-container");
     if (!container) return;
-    
-    const slides = container.querySelectorAll('.slide-item');
-    const dots = document.querySelectorAll('.dot-btn');
-    const prevBtn = document.getElementById('prev-btn');
-    const nextBtn = document.getElementById('next-btn');
-    
+
+    const slides = container.querySelectorAll(".slide-item");
+    const dots = document.querySelectorAll(".dot-btn");
+    const prevBtn = document.getElementById("prev-btn");
+    const nextBtn = document.getElementById("next-btn");
     const totalSlides = slides.length;
-    if (totalSlides === 0) return;
-    
+    if (!totalSlides) return;
+
     let currentSlide = 0;
     let autoSlideTimer;
 
     function updateSlider() {
-      container.style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
-      
-      dots.forEach(function(dot, index) {
-        if (index === currentSlide) {
-          dot.style.backgroundColor = 'var(--primary-color)';
-        } else {
-          dot.style.backgroundColor = '#d1d5db';
-        }
+      container.style.transform = `translateX(-${currentSlide * 100}%)`;
+      dots.forEach((dot, index) => {
+        dot.style.backgroundColor = index === currentSlide ? "var(--primary-color)" : "#d1d5db";
       });
     }
 
@@ -260,11 +167,6 @@
       updateSlider();
     }
 
-    function goToSlide(index) {
-      currentSlide = index;
-      updateSlider();
-    }
-
     function startAutoSlide() {
       autoSlideTimer = setInterval(nextSlide, 5000);
     }
@@ -273,36 +175,33 @@
       clearInterval(autoSlideTimer);
     }
 
-    function resetAutoSlide() {
-      stopAutoSlide();
-      startAutoSlide();
-    }
-
     if (prevBtn) {
-      prevBtn.addEventListener('click', function() {
+      prevBtn.addEventListener("click", () => {
         prevSlide();
-        resetAutoSlide();
-      });
-    }
-    
-    if (nextBtn) {
-      nextBtn.addEventListener('click', function() {
-        nextSlide();
-        resetAutoSlide();
+        stopAutoSlide();
+        startAutoSlide();
       });
     }
 
-    dots.forEach(function(dot) {
-      dot.addEventListener('click', function() {
-        const index = parseInt(this.getAttribute('data-index'));
-        goToSlide(index);
-        resetAutoSlide();
+    if (nextBtn) {
+      nextBtn.addEventListener("click", () => {
+        nextSlide();
+        stopAutoSlide();
+        startAutoSlide();
+      });
+    }
+
+    dots.forEach((dot) => {
+      dot.addEventListener("click", () => {
+        currentSlide = parseInt(dot.getAttribute("data-index"), 10);
+        updateSlider();
+        stopAutoSlide();
+        startAutoSlide();
       });
     });
 
-    container.addEventListener('mouseenter', stopAutoSlide);
-    container.addEventListener('mouseleave', startAutoSlide);
-
+    container.addEventListener("mouseenter", stopAutoSlide);
+    container.addEventListener("mouseleave", startAutoSlide);
     updateSlider();
     startAutoSlide();
   }
@@ -310,105 +209,14 @@
 </script>
 {% endif %}
 
-
 <script>
-function selectProductColor(btn) {
-  document.querySelectorAll('.color-option').forEach(el => {
-    el.classList.remove('border-color-light', 'bg-gray-50');
-    el.classList.add('border-gray-200');
-  });
-  
-  btn.classList.remove('border-gray-200');
-  btn.classList.add('border-color-light', 'bg-gray-50');
-  
-  const colorId = btn.getAttribute('data-color-id');
-  document.getElementById('selected-color-id').value = colorId;
-  
-  btn.animate([
-    { transform: 'scale(1)' },
-    { transform: 'scale(1.05)' },
-    { transform: 'scale(1)' }
-  ], { duration: 200 });
-}
-
-function addToCart(productId) {
-  const colorId = document.getElementById('selected-color-id')?.value;
-  
-  let colorName = '';
-  if (colorId) {
-    const selectedBtn = document.querySelector(`.color-option[data-color-id="${colorId}"]`);
-    if (selectedBtn) {
-      colorName = selectedBtn.querySelector('.font-medium').textContent;
-    }
-  }
-  
-  alert(`Ù…Ø­ØµÙˆÙ„ Ø¨Ù‡ Ø³Ø¨Ø¯ Ø®Ø±ÛŒØ¯ Ø§Ø¶Ø§ÙÙ‡ Ø´Ø¯!${colorName ? '\nØ±Ù†Ú¯: ' + colorName : ''}`);
-  
-  
-}
-
 function getCookie(name) {
   let cookieValue = null;
-  if (document.cookie) {
-    const cookies = document.cookie.split(';');
-    for (let cookie of cookies) {
-      cookie = cookie.trim();
-      if (cookie.startsWith(name + '=')) {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
-      }
-    }
-  }
-  return cookieValue;
-}
-
-
-function addToCart(productId) {
-  const colorId = document.getElementById('selected-color-id')?.value || null;
-  
-  fetch("{% url 'cart:add_to_cart' %}", {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'X-CSRFToken': getCookie('csrftoken')
-    },
-    body: `product_id=${productId}&color_id=${colorId || ''}`
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      alert('âœ… Ù…Ø­ØµÙˆÙ„ Ø¨Ù‡ Ø³Ø¨Ø¯ Ø§Ø¶Ø§ÙÙ‡ Ø´Ø¯!');
-    } else {
-      alert('âŒ Ø®Ø·Ø§ Ø¯Ø± Ø§ÙØ²ÙˆØ¯Ù† Ø¨Ù‡ Ø³Ø¨Ø¯');
-    }
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    alert('âŒ Ø®Ø·Ø§ Ø¯Ø± Ø§Ø±ØªØ¨Ø§Ø· Ø¨Ø§ Ø³Ø±ÙˆØ±');
-  });
-}
-
-
-function selectProductColor(btn) {
-  document.querySelectorAll('.color-option').forEach(el => {
-    el.classList.remove('border-color-light', 'bg-gray-50');
-    el.classList.add('border-gray-200');
-  });
-  
-  btn.classList.remove('border-gray-200');
-  btn.classList.add('border-color-light', 'bg-gray-50');
-  
-  const colorId = btn.getAttribute('data-color-id');
-  document.getElementById('selected-color-id').value = colorId;
-}
-
-function getCookie(name) {
-  let cookieValue = null;
-  if (document.cookie && document.cookie !== '') {
-    const cookies = document.cookie.split(';');
+  if (document.cookie && document.cookie !== "") {
+    const cookies = document.cookie.split(";");
     for (let i = 0; i < cookies.length; i++) {
       const cookie = cookies[i].trim();
-      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+      if (cookie.substring(0, name.length + 1) === name + "=") {
         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
         break;
       }
@@ -417,47 +225,50 @@ function getCookie(name) {
   return cookieValue;
 }
 
+function selectProductColor(btn) {
+  document.querySelectorAll(".color-option").forEach((el) => {
+    el.classList.remove("border-color-light", "bg-gray-50");
+    el.classList.add("border-gray-200");
+  });
+  btn.classList.remove("border-gray-200");
+  btn.classList.add("border-color-light", "bg-gray-50");
+
+  const colorId = btn.getAttribute("data-color-id");
+  const colorInput = document.getElementById("selected-color-id");
+  if (colorInput) colorInput.value = colorId;
+}
+
 function addToCart(productId) {
-  const colorId = document.getElementById('selected-color-id')?.value || '';
-  const csrftoken = getCookie('csrftoken');
-  
-  console.log('Adding to cart:', { productId, colorId });
-  
+  const colorId = document.getElementById("selected-color-id")?.value || "";
+  const csrftoken = getCookie("csrftoken");
+
   fetch("/cart/add/", {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'X-CSRFToken': csrftoken,
-      'X-Requested-With': 'XMLHttpRequest'
+      "Content-Type": "application/x-www-form-urlencoded",
+      "X-CSRFToken": csrftoken || "",
+      "X-Requested-With": "XMLHttpRequest"
     },
     body: `product_id=${productId}&color_id=${colorId}`
   })
-  .then(async response => {
-    console.log('Response status:', response.status);
-    
-    if (response.status === 403) {
-      throw new Error('Ù„Ø·ÙØ§Ù‹ Ø§Ø¨ØªØ¯Ø§ ÙˆØ§Ø±Ø¯ Ø´ÙˆÛŒØ¯');
-    }
-    
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Server error:', errorText);
-      throw new Error(`Ø®Ø·Ø§ÛŒ Ø³Ø±ÙˆØ±: ${response.status}`);
-    }
-    return response.json();
-  })
-  .then(data => {
-    console.log('Success:', data);
-    if (data.success) {
-      alert('âœ… Ù…Ø­ØµÙˆÙ„ Ø¨Ù‡ Ø³Ø¨Ø¯ Ø§Ø¶Ø§ÙÙ‡ Ø´Ø¯!');
-    } else {
-      alert('âŒ ' + (data.message || 'Ø®Ø·Ø§ Ø¯Ø± Ø§ÙØ²ÙˆØ¯Ù† Ø¨Ù‡ Ø³Ø¨Ø¯'));
-    }
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    alert('âŒ ' + error.message);
-  });
+    .then(async (response) => {
+      if (!response.ok) {
+        const txt = await response.text();
+        throw new Error(txt || "خطای سرور");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (data?.success) {
+        alert("محصول به سبد خرید اضافه شد.");
+      } else {
+        alert(data?.message || "خطا در افزودن به سبد");
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      alert("خطا در ارتباط با سرور");
+    });
 }
 </script>
 {% endblock %}

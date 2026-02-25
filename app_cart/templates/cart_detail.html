@@ -4,6 +4,12 @@
 <div class="container mx-auto p-4">
     <h1 class="text-2xl font-bold mb-6 text-center">سبد خرید</h1>
 
+    {% if is_guest_cart %}
+        <div class="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
+            خرید مهمان فعال است. بدون ایمیل هم می‌توانید خرید را ادامه بدهید.
+        </div>
+    {% endif %}
+
     {% if cart_items %}
         <div class="space-y-4">
             {% for item in cart_items %}
@@ -24,7 +30,8 @@
                 ادامه خرید
             </a>
         </div>
+    {% else %}
+        <p class="text-center text-gray-500 py-8">سبد خرید شما خالی است.</p>
     {% endif %}
 </div>
 {% endblock %}
-
