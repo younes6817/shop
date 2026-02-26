@@ -17,6 +17,10 @@ class Banner(models.Model):
     
     position = models.PositiveIntegerField(default=0, verbose_name="موقعیت")
 
+    class Meta:
+        verbose_name = "بنر"
+        verbose_name_plural = "بنرها"
+    
     def __str__(self):
         return self.title
 

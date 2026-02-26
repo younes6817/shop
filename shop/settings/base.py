@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -101,7 +102,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 
-LANGUAGE_CODE = 'fa-ir'
+LANGUAGE_CODE = 'fa'
 
 TIME_ZONE = 'Asia/Tehran'
 
@@ -110,7 +111,8 @@ USE_L10N = True
 USE_TZ = True
 
 LANGUAGES = [
-    ('fa', 'persian')
+    ('fa', 'فارسی'),
+    ('en', 'English'),
 ]
 
 
@@ -134,9 +136,9 @@ LOGOUT_REDIRECT_URL = '/'
 
 
 USER_ROLE = [
-    ('customer', 'Customer'),
-    ('admin', 'Admin'),
-    ('seller', 'Seller'),
+    ('customer', 'مشتری'),
+    ('admin', 'مدیر'),
+    ('seller', 'فروشنده'),
 ]
 
 

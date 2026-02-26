@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}ویرایش پروفایل{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto py-6">
+  <section class="bg-white p-5 rounded-2xl shadow">
+    <h1 class="text-xl font-bold mb-4">ویرایش اطلاعات حساب</h1>
+    <form method="post" class="space-y-3">
+      {% csrf_token %}
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700">{{ form.first_name.label }}</label>
+        {{ form.first_name }}
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">{{ form.last_name.label }}</label>
+        {{ form.last_name }}
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">{{ form.phone.label }}</label>
+        {{ form.phone }}
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">{{ form.email.label }}</label>
+        {{ form.email }}
+      </div>
+
+      {% if form.errors %}
+        <div class="bg-red-100 text-red-700 p-3 rounded">
+          <ul class="list-disc list-inside">
+            {% for field in form %}
+              {% for error in field.errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+      <button type="submit" class="w-full py-2.5 rounded-xl bg-color-light hover:bg-color-dark text-white font-semibold transition">
+        ذخیره تغییرات
+      </button>
+    </form>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}آدرس‌ها{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto py-6 space-y-4">
+  <section class="bg-white p-5 rounded-2xl shadow">
+    <h1 class="text-xl font-bold mb-4">مدیریت آدرس‌ها</h1>
+
+    {% if messages %}
+      <div class="space-y-2 mb-4">
+        {% for message in messages %}
+          <div class="text-sm p-2 rounded {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="post" class="space-y-3">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="add">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">عنوان آدرس</label>
+        <input type="text" name="title" class="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none" placeholder="مثال: خانه، محل کار">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">متن آدرس</label>
+        <textarea name="address" rows="3" class="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none" placeholder="آدرس کامل را وارد کنید"></textarea>
+      </div>
+      <button type="submit" class="w-full py-2.5 rounded-xl bg-color-light hover:bg-color-dark text-white font-semibold transition">
+        ذخیره آدرس
+      </button>
+    </form>
+  </section>
+
+  <section class="bg-white p-5 rounded-2xl shadow">
+    <h2 class="text-lg font-bold mb-3">لیست آدرس‌ها</h2>
+    {% if addresses %}
+      <div class="space-y-3">
+        {% for item in addresses %}
+          <div class="border rounded-xl p-3">
+            <p class="font-semibold text-gray-800">{{ item.title }}</p>
+            <p class="text-sm text-gray-600 mt-1">{{ item.address }}</p>
+            <form method="post" class="mt-2">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="delete">
+              <input type="hidden" name="index" value="{{ forloop.counter0 }}">
+              <button type="submit" class="text-sm text-red-600 hover:text-red-700">حذف</button>
+            </form>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-sm text-gray-500">هنوز آدرسی ثبت نشده است.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

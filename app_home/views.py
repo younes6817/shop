@@ -1,9 +1,11 @@
-﻿from django.shortcuts import render
+from django.shortcuts import render
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from app_banner.models import Banner
 from app_product.models import Product
 
 
+@ensure_csrf_cookie
 def home_view(request):
     query = (request.GET.get("q") or "").strip()
     category_id = (request.GET.get("category") or "").strip()
@@ -44,4 +46,3 @@ def home_view(request):
             "show_home_extras": show_home_extras,
         },
     )
-

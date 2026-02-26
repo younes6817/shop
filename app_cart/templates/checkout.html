@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}تکمیل خرید{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-4 max-w-3xl">
+  <h1 class="text-2xl font-bold mb-6 text-center">تکمیل خرید</h1>
+
+  {% if payment_success %}
+    <div class="mb-5 rounded-xl border border-green-200 bg-green-50 p-4 text-green-700">
+      <p class="font-bold mb-1">پرداخت با موفقیت ثبت شد.</p>
+      <p class="text-sm">آدرس ارسال: {{ selected_address_text }}</p>
+    </div>
+  {% endif %}
+
+  <div class="bg-white rounded-xl shadow p-4 mb-4">
+    <h2 class="font-bold text-lg mb-3">آدرس ارسال</h2>
+
+    <form method="post" class="space-y-3">
+      {% csrf_token %}
+
+      {% if addresses %}
+        <div class="space-y-2">
+          {% for addr in addresses %}
+            <label class="flex items-start gap-2 rounded-lg border border-gray-200 p-3 cursor-pointer hover:border-color-light transition">
+              <input type="radio" name="address_index" value="{{ forloop.counter0 }}" class="mt-1">
+              <div>
+                <p class="font-semibold text-sm">{{ addr.title }}</p>
+                <p class="text-sm text-gray-600">{{ addr.address }}</p>
+              </div>
+            </label>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div>
+        <label class="block mb-1 text-sm font-medium">یا آدرس را دستی وارد کنید</label>
+        <textarea name="manual_address" rows="3" class="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:border-color-light" placeholder="مثال: تهران، خیابان ..."></textarea>
+      </div>
+
+      {% if address_error %}
+        <p class="text-sm text-red-600">{{ address_error }}</p>
+      {% endif %}
+
+      <button type="submit" class="w-full py-3 rounded-xl bg-color-light hover:bg-color-dark text-white font-bold transition">
+        پرداخت
+      </button>
+    </form>
+  </div>
+
+  <div class="bg-white rounded-xl shadow p-4">
+    <h2 class="font-bold text-lg mb-3">خلاصه مبلغ</h2>
+    <div class="space-y-2 text-sm">
+      <div class="flex justify-between">
+        <span>جمع کالاها:</span>
+        <span>{{ subtotal }} تومان</span>
+      </div>
+      <div class="flex justify-between">
+        <span>هزینه ارسال:</span>
+        <span>{{ shipping_cost }} تومان</span>
+      </div>
+      <div class="border-t pt-2 mt-2 flex justify-between font-bold text-base">
+        <span>مبلغ قابل پرداخت:</span>
+        <span class="text-color-light">{{ total_payable }} تومان</span>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

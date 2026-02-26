@@ -1,0 +1,190 @@
+:root,
+html,
+html[data-theme="dark"],
+html[data-theme="light"] {
+  --primary-color: #4c00ff;
+  --primary-dark: #0306b1;
+
+  /* Django admin variables */
+  --body-bg: #f8fafc !important;
+  --body-fg: #111827 !important;
+  --header-bg: #4c00ff !important;
+  --header-color: #ffffff !important;
+  --breadcrumbs-bg: #ffffff !important;
+  --breadcrumbs-fg: #111827 !important;
+  --link-fg: #0306b1 !important;
+  --link-hover-color: #4c00ff !important;
+  --hairline-color: #e5e7eb !important;
+  --border-color: #e5e7eb !important;
+  --darkened-bg: #f3f4f6 !important;
+  --selected-bg: #eef0ff !important;
+}
+
+html[dir="rtl"] body {
+  font-family: Tahoma, "Segoe UI", sans-serif;
+}
+
+/* Force light theme globally in admin */
+html,
+body,
+#container,
+#content,
+#content-main,
+#nav-sidebar,
+#changelist,
+#changelist-form,
+#changelist .results,
+.change-list,
+.change-list .results,
+.module,
+.dashboard .module,
+.form-row,
+.inline-group,
+.inline-related,
+.submit-row,
+.actions,
+.breadcrumbs,
+.object-tools,
+.paginator,
+.messagelist li {
+  background-color: #ffffff !important;
+  color: #111827 !important;
+}
+
+/* Header */
+#header {
+  background: var(--primary-color) !important;
+  color: #ffffff !important;
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+#header a,
+#header a:link,
+#header a:visited,
+#site-name a {
+  color: #ffffff !important;
+}
+
+/* Sidebar */
+#nav-sidebar {
+  border-left: 1px solid #e5e7eb !important;
+}
+
+#nav-sidebar a {
+  color: #111827 !important;
+}
+
+#nav-sidebar .current-model,
+#nav-sidebar .current-app .section {
+  background: #eef0ff !important;
+}
+
+/* Tables (product/category lists and all changelists) */
+table,
+thead,
+tbody,
+tr,
+th,
+td,
+#changelist table,
+#changelist table thead,
+#changelist table tbody,
+#changelist table tr,
+#changelist table th,
+#changelist table td,
+.change-list table,
+.change-list table thead,
+.change-list table tbody,
+.change-list table tr,
+.change-list table th,
+.change-list table td,
+.results table,
+.results table thead,
+.results table tbody,
+.results table tr,
+.results table th,
+.results table td {
+  background-color: #ffffff !important;
+  color: #111827 !important;
+  border-color: #e5e7eb !important;
+}
+
+#changelist table thead th,
+.change-list table thead th,
+.results table thead th {
+  background-color: #f8fafc !important;
+}
+
+#changelist table tbody tr:nth-child(even),
+.change-list table tbody tr:nth-child(even),
+.results table tbody tr:nth-child(even) {
+  background-color: #fcfcff !important;
+}
+
+tr.selected td {
+  background: #eef0ff !important;
+}
+
+/* Inputs */
+input,
+textarea,
+select {
+  background: #ffffff !important;
+  color: #111827 !important;
+  border-color: #d1d5db !important;
+}
+
+/* Buttons */
+.button,
+input[type="submit"],
+input[type="button"],
+input[type="reset"],
+.submit-row input,
+a.button {
+  background: var(--primary-color) !important;
+  border-color: var(--primary-dark) !important;
+  color: #ffffff !important;
+}
+
+.button:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+input[type="reset"]:hover,
+.submit-row input:hover,
+a.button:hover {
+  background: var(--primary-dark) !important;
+}
+
+/* Object tools (مثل دکمه "افزودن") */
+.object-tools a,
+.object-tools a:link,
+.object-tools a:visited,
+.object-tools .addlink,
+a.addlink {
+  background: #ffffff !important;
+  color: var(--primary-dark) !important;
+  border: 1px solid var(--primary-color) !important;
+  box-shadow: none !important;
+}
+
+.object-tools a:hover,
+.object-tools .addlink:hover,
+a.addlink:hover {
+  background: var(--primary-color) !important;
+  color: #ffffff !important;
+}
+
+/* Links */
+a,
+a:link,
+a:visited {
+  color: var(--primary-dark) !important;
+}
+
+/* Light cards */
+.module,
+#content-related,
+.dashboard #content {
+  border-radius: 10px;
+  overflow: hidden;
+}
