@@ -4,4 +4,5 @@
 class AppSettingConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'app_setting'
+    verbose_name = 'تنظیمات'
 

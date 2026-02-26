@@ -36,16 +36,21 @@ class User(AbstractUser):
         unique=True,
         null=True,
         blank=True,
+        verbose_name="شماره موبایل",
         validators=[RegexValidator(regex=r"^09\d{9}$")],
     )
 
-    role = models.CharField(max_length=20, choices=settings.base.USER_ROLE, default="customer")
-    point = models.PositiveIntegerField(default=0)
+    role = models.CharField(max_length=20, choices=settings.base.USER_ROLE, default="customer", verbose_name="نقش")
+    point = models.PositiveIntegerField(default=0, verbose_name="امتیاز")
 
     USERNAME_FIELD = "phone"
     REQUIRED_FIELDS = []
 
     objects = UserManager()
+
+    class Meta:
+        verbose_name = "کاربر"
+        verbose_name_plural = "کاربران"
 
     def __str__(self):
         return self.phone or self.email or str(self.pk)

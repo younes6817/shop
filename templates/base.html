@@ -5,17 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}{{ SHOP_NAME }}{% endblock %}</title>
   {% load static %}
-  
   <script src="{% static 'js/tailwind.js' %}"></script>
   <style>
     :root {
-      --primary-color: #4c00ff;
-      --primary-dark: #0306b1;
+      --primary-color: #373aff;
+      --primary-dark: #1300c1;
     }
     .text-color-light { color: var(--primary-color); }
     .text-discount-dark { color: var(--primary-dark); }
     .bg-color-light { background-color: var(--primary-color); }
     .bg-color-dark { background-color: var(--primary-dark); }
+    .ring-color-light { --tw-ring-color: var(--primary-color); }
     .scrollbar-hide {
       -ms-overflow-style: none;
       scrollbar-width: none;
@@ -25,30 +25,25 @@
     }
   </style>
 </head>
-<body class="pt-16 pb-16">
-
-  
+<body class="pt-16 pb-16 bg-gray-50">
   <div class="fixed top-0 left-0 w-full bg-white py-3 shadow-md z-50 flex items-center justify-between px-4">
-    <a href="{% url 'home:home' %}">
-      <h1 class="text-xl font-bold text-gray-800">{{ SHOP_NAME }}</h1>
+    <a href="{% url 'home:home' %}" class="group flex items-center gap-2">
+      <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-color-dark text-white text-sm font-bold shadow-md">
+        ✦
+      </span>
+      <div class="leading-tight">
+        <h1 class="text-lg font-extrabold tracking-tight text-gray-800 transition-colors group-hover:text-color-light">{{ SHOP_NAME }}</h1>
+        <p class="text-[10px] text-gray-500">فروش آنلاین ساده و سریع</p>
+      </div>
     </a>
-    <button id="menu-toggle" class="text-xl font-bold">☰</button>
+    <button id="menu-toggle" class="text-2xl font-bold leading-none">☰</button>
   </div>
 
-  
   <div id="mobile-menu" class="hidden absolute top-16 left-0 w-full bg-white shadow-lg z-50">
     <div class="px-4 py-3">
       <form method="get" action="{% url 'home:home' %}" class="flex items-center gap-2">
-        <button type="submit" class="text-xl w-10 h-10 flex items-center justify-center bg-gray-100 rounded-lg hover:bg-gray-200">
-          ⌕ 
-        </button>
-        <input
-          type="text"
-          name="q"
-          value="{{ search_query }}"
-          placeholder="جستجو"
-          class="flex-1 px-4 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
-        >
+        <button type="submit" class="text-xl w-10 h-10 flex items-center justify-center bg-gray-100 rounded-lg hover:bg-gray-200">⌕</button>
+        <input type="text" name="q" value="{{ search_query }}" placeholder="جستجو" class="flex-1 px-4 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500">
       </form>
     </div>
     <div class="relative">
@@ -58,132 +53,103 @@
       </button>
       <div id="category-list" class="hidden bg-gray-50 py-2">
         {% for category in categories %}
-          <a href="{% url 'home:home' %}?category={{ category.id }}" class="block px-6 py-2 text-gray-700 hover:bg-white">
-            {{ category.name }}
-          </a>
+          <a href="{% url 'home:home' %}?category={{ category.id }}" class="block px-6 py-2 text-gray-700 hover:bg-white">{{ category.name }}</a>
         {% endfor %}
       </div>
     </div>
   </div>
 
-  
   <main class="p-4">
     {% block content %}{% endblock %}
   </main>
 
-  
-  <nav class="fixed bottom-0 left-0 w-full h-16 z-50 bg-gray-800">
-    <div class="flex justify-around items-center h-16 max-w-md mx-auto">
-      <a href="{% url 'home:home' %}" class="flex flex-col items-center text-white">
-        <span class="text-xl">⌂</span>
-        <span class="text-xs mt-1">خانه</span>
+  {% if request.user.is_authenticated and request.user.role == 'seller' or request.user.is_authenticated and request.user.is_staff %}
+    <a href="{% url 'admin:index' %}" class="fixed bottom-20 right-4 z-50 bg-color-light text-white px-4 py-2 rounded-lg shadow-md hover:bg-color-dark transition">
+      +
+    </a>
+  {% endif %}
+  <nav class="fixed bottom-0 left-0 w-full h-16 z-50 bg-white border-t border-gray-200 shadow-[0_-4px_12px_rgba(0,0,0,0.06)]">
+    <div class="grid grid-cols-3 h-full max-w-md mx-auto px-1">
+      <a href="{% url 'home:home' %}" class="m-1 flex flex-col items-center justify-center rounded-md transition {% if request.resolver_match.url_name == 'home' %}bg-color-dark text-white{% else %}text-gray-600 hover:bg-gray-100{% endif %}">
+        <span class="text-lg leading-none">⌂</span>
+        <span class="text-xs mt-1 font-medium">خانه</span>
       </a>
-      <a href="{% url 'cart:cart_view' %}" class="flex flex-col items-center text-white">
-        <span class="text-xl">🛒</span>
-        <span class="text-xs mt-1">سبد خرید</span>
+      <a href="{% url 'cart:cart_view' %}" class="m-1 flex flex-col items-center justify-center rounded-md transition {% if request.resolver_match.namespace == 'cart' %}bg-color-dark text-white{% else %}text-gray-600 hover:bg-gray-100{% endif %}">
+        <span class="text-lg leading-none">🛒</span>
+        <span class="text-xs mt-1 font-medium">سبد خرید</span>
       </a>
-      <a href="{% url 'user:profile' %}" class="flex flex-col items-center text-white">
-        <span class="text-xl">👤</span>
-        <span class="text-xs mt-1">حساب</span>
+      <a href="{% url 'user:profile' %}" class="m-1 flex flex-col items-center justify-center rounded-md transition {% if request.resolver_match.namespace == 'user' %}bg-color-dark text-white{% else %}text-gray-600 hover:bg-gray-100{% endif %}">
+        <span class="text-lg leading-none">👤</span>
+        <span class="text-xs mt-1 font-medium">حساب</span>
       </a>
     </div>
   </nav>
 
-  
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const toggle = document.getElementById('menu-toggle');
-      const menu = document.getElementById('mobile-menu');
+    document.addEventListener("DOMContentLoaded", function () {
+      const toggle = document.getElementById("menu-toggle");
+      const menu = document.getElementById("mobile-menu");
       if (toggle && menu) {
-        toggle.addEventListener('click', () => {
-          menu.classList.toggle('hidden');
-        });
+        toggle.addEventListener("click", () => menu.classList.toggle("hidden"));
       }
 
-      const catToggle = document.getElementById('category-toggle');
-      const catList = document.getElementById('category-list');
+      const catToggle = document.getElementById("category-toggle");
+      const catList = document.getElementById("category-list");
       if (catToggle && catList) {
-        catToggle.addEventListener('click', (e) => {
+        catToggle.addEventListener("click", (e) => {
           e.stopPropagation();
-          catList.classList.toggle('hidden');
+          catList.classList.toggle("hidden");
         });
-
-        document.addEventListener('click', (e) => {
+        document.addEventListener("click", (e) => {
           if (!catToggle.contains(e.target) && !catList.contains(e.target)) {
-            catList.classList.add('hidden');
+            catList.classList.add("hidden");
           }
         });
       }
     });
 
-  function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-      const cookies = document.cookie.split(';');
-      for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === name + "=") {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
         }
       }
+      return cookieValue;
     }
-    return cookieValue;
-  }
 
-  function removeFromCart(itemId, event) {
-    if (event) {
-      event.stopPropagation();
-      event.preventDefault();
+    function removeFromCart(itemId, event) {
+      if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+      if (!confirm("آیا مطمئن هستید؟")) return;
+
+      fetch(`/cart/remove/${itemId}/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-CSRFToken": getCookie("csrftoken") || "",
+          "X-Requested-With": "XMLHttpRequest"
+        }
+      })
+        .then(async (res) => {
+          if (!res.ok) {
+            const txt = await res.text();
+            throw new Error(txt || "خطای سرور");
+          }
+          return res.json();
+        })
+        .then((data) => {
+          if (data?.success) location.reload();
+        })
+        .catch(() => alert("خطا در ارتباط با سرور"));
     }
-    
-    if (!confirm('آیا مطمئن هستید؟')) return;
-    
-    console.log('🗑 Removing item:', itemId);
-    
-    const csrftoken = getCookie('csrftoken');
-    
-    fetch(`/cart/remove/${itemId}/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'X-CSRFToken': csrftoken || '',
-        'X-Requested-With': 'XMLHttpRequest'
-      }
-    })
-    .then(async res => {
-      console.log('📡 Status:', res.status);
-      
-      if (res.status === 403) {
-        alert('لطفاً وارد شوید');
-        window.location.href = '/admin/login/';
-        return;
-      }
-      
-      if (!res.ok) {
-        const txt = await res.text();
-        console.error('❌ Server:', txt);
-        throw new Error('خطای سرور: ' + res.status);
-      }
-      return res.json();
-    })
-    .then(data => {
-      console.log('✅ Response:', data);
-      if (data?.success) {
-        location.reload();
-      } else {
-        alert('❌ ' + (data?.message || 'خطا در حذف'));
-      }
-    })
-    .catch(err => {
-      console.error('💥 Error:', err);
-      alert('❌ ' + err.message);
-    });
-}
-
   </script>
 </body>
 </html>
-
-
-

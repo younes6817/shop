@@ -1,9 +1,10 @@
-from django.contrib.auth import login, logout
+from django.contrib import messages
+from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
 
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, ProfileForm, RegisterForm, SecurityPasswordChangeForm
 from .models import User
 
 
@@ -61,10 +62,10 @@ def login_view(request):
 
 def main_view(request):
     profile_options = [
-        {"title": "تنظیمات حساب", "subtitle": "ویرایش اطلاعات شخصی", "href": "#"},
-        {"title": "سفارش‌ها", "subtitle": "مشاهده تاریخچه خرید", "href": "#"},
-        {"title": "آدرس‌ها", "subtitle": "مدیریت آدرس‌های ارسال", "href": "#"},
-        {"title": "امنیت", "subtitle": "رمز عبور و امنیت حساب", "href": "#"},
+        {"title": "تنظیمات حساب", "subtitle": "ویرایش اطلاعات شخصی", "href": "/account/profile_edit/"},
+        {"title": "سفارش‌ها", "subtitle": "مشاهده تاریخچه خرید", "href": "/account/orders/"},
+        {"title": "آدرس‌ها", "subtitle": "مدیریت آدرس‌های ارسال", "href": "/account/addresses/"},
+        {"title": "امنیت", "subtitle": "رمز عبور و امنیت حساب", "href": "/account/security/"},
     ]
     return render(request, "main.html", {"profile_options": profile_options})
 
@@ -83,3 +84,74 @@ def delete_account_view(request):
     user_to_delete.delete()
     return redirect("home:home")
 
+
+@login_required
+def profile_edit_view(request):
+    if request.method == "POST":
+        form = ProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect("user:profile")
+    else:
+        form = ProfileForm(instance=request.user)
+
+    return render(request, "profile_edit.html", {"form": form})
+
+
+@login_required
+def orders_view(request):
+    return render(request, "orders.html")
+
+
+@login_required
+def addresses_view(request):
+    addresses = request.session.get("account_addresses", [])
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+
+        if action == "add":
+            title = (request.POST.get("title") or "").strip()
+            text = (request.POST.get("address") or "").strip()
+            if title and text:
+                addresses.append({"title": title, "address": text})
+                request.session["account_addresses"] = addresses
+                request.session.modified = True
+                messages.success(request, "آدرس جدید ذخیره شد.")
+            else:
+                messages.error(request, "عنوان و متن آدرس الزامی است.")
+
+        if action == "delete":
+            try:
+                idx = int(request.POST.get("index", "-1"))
+            except ValueError:
+                idx = -1
+            if 0 <= idx < len(addresses):
+                addresses.pop(idx)
+                request.session["account_addresses"] = addresses
+                request.session.modified = True
+                messages.success(request, "آدرس حذف شد.")
+
+        return redirect("user:addresses")
+
+    return render(request, "addresses.html", {"addresses": addresses})
+
+
+@login_required
+def security_view(request):
+    if request.method == "POST":
+        form = SecurityPasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, "رمز عبور با موفقیت تغییر کرد.")
+            return redirect("user:security")
+        messages.error(request, "لطفاً خطاهای فرم را بررسی کنید.")
+    else:
+        form = SecurityPasswordChangeForm(user=request.user)
+
+    common_class = "w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none"
+    for field in form.fields.values():
+        field.widget.attrs["class"] = common_class
+
+    return render(request, "security.html", {"form": form})

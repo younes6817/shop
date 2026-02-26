@@ -3,28 +3,26 @@
 
 {% block content %}
 <div class="max-w-md mx-auto py-4 space-y-4">
-
   {% if user.is_authenticated %}
-    
     <section class="relative overflow-hidden rounded-2xl bg-color-light text-white p-5 shadow">
-      
       <div class="absolute -top-8 -left-8 w-28 h-28 rounded-full bg-white/20"></div>
-      
       <div class="absolute -bottom-10 -right-6 w-24 h-24 rotate-12 rounded-2xl bg-white/15"></div>
 
       <div class="relative z-10 flex items-center gap-4">
-        
         <div class="w-16 h-16 rounded-full bg-white/25 flex items-center justify-center text-3xl">👤</div>
         <div>
-          
           <h1 class="text-xl font-extrabold">
             {% if user.get_full_name %}
               {{ user.get_full_name }}
-            {% else %}
+            {% elif user.phone %}
               {{ user.phone }}
+            {% else %}
+              کاربر
             {% endif %}
           </h1>
-          <p class="text-sm text-white/90">{{ user.phone }}</p>
+          {% if user.phone %}
+            <p class="text-sm text-white/90">{{ user.phone }}</p>
+          {% endif %}
           {% if user.email %}
             <p class="text-sm text-white/80">{{ user.email }}</p>
           {% endif %}
@@ -32,7 +30,6 @@
       </div>
     </section>
 
-    
     <section class="bg-white rounded-2xl shadow p-3">
       <h2 class="text-sm font-bold text-gray-800 mb-3">تنظیمات حساب</h2>
       <div class="space-y-2">
@@ -45,7 +42,6 @@
       </div>
     </section>
 
-    
     <section class="bg-white rounded-2xl shadow p-3 space-y-2">
       <form method="post" action="{% url 'user:logout' %}">
         {% csrf_token %}
@@ -62,12 +58,10 @@
       </form>
     </section>
   {% else %}
-    
     <section class="rounded-2xl bg-white shadow p-5 text-center">
       <div class="w-16 h-16 rounded-full bg-gray-100 mx-auto mb-3 flex items-center justify-center text-2xl">🔐</div>
       <h1 class="text-lg font-bold text-gray-800">حساب کاربری</h1>
       <p class="text-sm text-gray-500 mt-2">برای استفاده از امکانات حساب کاربری باید وارد شوید.</p>
-
       <div class="mt-4">
         <a href="{% url 'user:login' %}" class="inline-block px-5 py-2.5 rounded-xl bg-color-light hover:bg-color-dark text-white font-semibold transition">
           ورود به حساب
@@ -77,4 +71,3 @@
   {% endif %}
 </div>
 {% endblock %}
-
