@@ -98,12 +98,38 @@ def checkout_view(request):
 
     addresses = request.session.get("account_addresses", []) if request.user.is_authenticated else []
     address_text = ""
-    address_error = ""
+    form_errors = []
     payment_success = False
+    selected_address_index = ""
+
+    profile_name = ""
+    if request.user.is_authenticated:
+        profile_name = f"{request.user.first_name or ''} {request.user.last_name or ''}".strip()
+    need_full_name = not profile_name
+
+    form_data = {
+        "full_name": "",
+        "province": "",
+        "city": "",
+        "postal_code": "",
+        "building_no": "",
+        "unit_no": "",
+        "minimal_address": "",
+        "phone": "",
+    }
 
     if request.method == "POST":
+        form_data = {
+            "full_name": (request.POST.get("full_name") or "").strip(),
+            "province": (request.POST.get("province") or "").strip(),
+            "city": (request.POST.get("city") or "").strip(),
+            "postal_code": (request.POST.get("postal_code") or "").strip(),
+            "building_no": (request.POST.get("building_no") or "").strip(),
+            "unit_no": (request.POST.get("unit_no") or "").strip(),
+            "minimal_address": (request.POST.get("minimal_address") or "").strip(),
+            "phone": (request.POST.get("phone") or "").strip(),
+        }
         selected_address_index = (request.POST.get("address_index") or "").strip()
-        manual_address = (request.POST.get("manual_address") or "").strip()
 
         if selected_address_index.isdigit():
             idx = int(selected_address_index)
@@ -111,11 +137,51 @@ def checkout_view(request):
                 address_text = addresses[idx].get("address", "").strip()
 
         if not address_text:
-            address_text = manual_address
+            final_name = form_data["full_name"] if need_full_name else profile_name
 
-        if not address_text:
-            address_error = "لطفاً آدرس ارسال را وارد یا انتخاب کنید."
-        else:
+            if need_full_name and not final_name:
+                form_errors.append("نام تحویل‌گیرنده الزامی است.")
+
+            if not form_data["province"]:
+                form_errors.append("استان الزامی است.")
+            if not form_data["city"]:
+                form_errors.append("شهر الزامی است.")
+            if not form_data["minimal_address"]:
+                form_errors.append("آدرس الزامی است.")
+            if not form_data["building_no"]:
+                form_errors.append("پلاک الزامی است.")
+
+            postal_code = form_data["postal_code"]
+            if not postal_code:
+                form_errors.append("کد پستی الزامی است.")
+            elif not postal_code.isdigit() or len(postal_code) != 10:
+                form_errors.append("کد پستی باید ۱۰ رقم باشد.")
+
+            phone = form_data["phone"]
+            if not phone:
+                form_errors.append("شماره تماس الزامی است.")
+            elif not phone.isdigit() or len(phone) != 11 or not phone.startswith("09"):
+                form_errors.append("شماره تماس معتبر نیست.")
+
+            if not form_errors:
+                address_parts = [
+                    f"تحویل‌گیرنده: {final_name}",
+                    f"استان: {form_data['province']}",
+                    f"شهر: {form_data['city']}",
+                    f"آدرس: {form_data['minimal_address']}",
+                    f"پلاک: {form_data['building_no']}",
+                ]
+                if form_data["unit_no"]:
+                    address_parts.append(f"واحد: {form_data['unit_no']}")
+                address_parts.extend(
+                    [
+                        f"کدپستی: {form_data['postal_code']}",
+                        f"تماس: {form_data['phone']}",
+                    ]
+                )
+                address_text = " | ".join(address_parts)
+
+        if address_text and not form_errors:
             payment_success = True
 
     return render(
@@ -127,8 +193,12 @@ def checkout_view(request):
             "subtotal": _to_persian_num("{:,}".format(int(subtotal))),
             "shipping_cost": _to_persian_num("{:,}".format(int(shipping_cost))),
             "total_payable": _to_persian_num("{:,}".format(int(total_payable))),
-            "address_error": address_error,
+            "form_errors": form_errors,
             "selected_address_text": address_text,
+            "selected_address_index": selected_address_index,
+            "need_full_name": need_full_name,
+            "profile_name": profile_name,
+            "form_data": form_data,
             "payment_success": payment_success,
             "is_guest_cart": not request.user.is_authenticated,
         },
