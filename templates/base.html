@@ -23,6 +23,7 @@
     .bg-color-light { background-color: var(--primary-color); }
     .bg-color-dark { background-color: var(--primary-dark); }
     .ring-color-light { --tw-ring-color: var(--primary-color); }
+    .ring-color-light { --tw-ring-color: var(--primary-color); }
     .scrollbar-hide {
       -ms-overflow-style: none;
       scrollbar-width: none;
@@ -32,6 +33,7 @@
     }
   </style>
 </head>
+<body class="pt-16 pb-16 bg-gray-50">
 <body class="pt-16 pb-16 bg-gray-50">
   <div class="fixed top-0 left-0 w-full bg-white py-3 shadow-md z-50 flex items-center justify-between px-4">
     <a href="{% url 'home:home' %}" class="group flex items-center gap-2">
@@ -65,10 +67,12 @@
       <div id="category-list" class="hidden bg-gray-50 py-2">
         {% for category in categories %}
           <a href="{% url 'home:home' %}?category={{ category.id }}" class="block px-6 py-2 text-gray-700 hover:bg-white">{{ category.name }}</a>
+          <a href="{% url 'home:home' %}?category={{ category.id }}" class="block px-6 py-2 text-gray-700 hover:bg-white">{{ category.name }}</a>
         {% endfor %}
       </div>
     </div>
   </div>
+
 
   <main class="p-4">
     {% block content %}{% endblock %}
@@ -96,23 +100,34 @@
     </div>
   </nav>
 
+
   <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const toggle = document.getElementById("menu-toggle");
+      const menu = document.getElementById("mobile-menu");
     document.addEventListener("DOMContentLoaded", function () {
       const toggle = document.getElementById("menu-toggle");
       const menu = document.getElementById("mobile-menu");
       if (toggle && menu) {
         toggle.addEventListener("click", () => menu.classList.toggle("hidden"));
+        toggle.addEventListener("click", () => menu.classList.toggle("hidden"));
       }
 
       const catToggle = document.getElementById("category-toggle");
       const catList = document.getElementById("category-list");
+      const catToggle = document.getElementById("category-toggle");
+      const catList = document.getElementById("category-list");
       if (catToggle && catList) {
+        catToggle.addEventListener("click", (e) => {
         catToggle.addEventListener("click", (e) => {
           e.stopPropagation();
           catList.classList.toggle("hidden");
+          catList.classList.toggle("hidden");
         });
         document.addEventListener("click", (e) => {
+        document.addEventListener("click", (e) => {
           if (!catToggle.contains(e.target) && !catList.contains(e.target)) {
+            catList.classList.add("hidden");
             catList.classList.add("hidden");
           }
         });
@@ -133,7 +148,48 @@
       }
       return cookieValue;
     }
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === name + "=") {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
 
+    function removeFromCart(itemId, event) {
+      if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+      if (!confirm("آیا مطمئن هستید؟")) return;
+
+      fetch(`/cart/remove/${itemId}/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-CSRFToken": getCookie("csrftoken") || "",
+          "X-Requested-With": "XMLHttpRequest"
+        }
+      })
+        .then(async (res) => {
+          if (!res.ok) {
+            const txt = await res.text();
+            throw new Error(txt || "خطای سرور");
+          }
+          return res.json();
+        })
+        .then((data) => {
+          if (data?.success) location.reload();
+        })
+        .catch(() => alert("خطا در ارتباط با سرور"));
+    }
     function removeFromCart(itemId, event) {
       if (event) {
         event.stopPropagation();

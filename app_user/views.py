@@ -1,9 +1,12 @@
 from django.contrib import messages
 from django.contrib.auth import login, logout, update_session_auth_hash
+from django.contrib import messages
+from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
 
+from .forms import LoginForm, ProfileForm, RegisterForm, SecurityPasswordChangeForm
 from .forms import LoginForm, ProfileForm, RegisterForm, SecurityPasswordChangeForm
 from .models import User
 

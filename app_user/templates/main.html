@@ -17,11 +17,17 @@
             {% if user.get_full_name %}
               {{ user.get_full_name }}
             {% elif user.phone %}
+            {% elif user.phone %}
               {{ user.phone }}
+            {% else %}
+              کاربر
             {% else %}
               کاربر
             {% endif %}
           </h1>
+          {% if user.phone %}
+            <p class="text-sm text-white/90">{{ user.phone }}</p>
+          {% endif %}
           {% if user.phone %}
             <p class="text-sm text-white/90">{{ user.phone }}</p>
           {% endif %}
@@ -31,6 +37,7 @@
         </div>
       </div>
     </section>
+
 
     <section class="bg-white rounded-2xl shadow p-3">
       <h2 class="text-sm font-bold text-gray-800 mb-3">تنظیمات حساب</h2>
@@ -43,6 +50,7 @@
         {% endfor %}
       </div>
     </section>
+
 
     <section class="bg-white rounded-2xl shadow p-3 space-y-2">
       <form method="post" action="{% url 'user:logout' %}">

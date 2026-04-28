@@ -1,6 +1,7 @@
 from django.db.models import Prefetch
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 from math import atan2, cos, radians, sin, sqrt
 from django.conf import settings
@@ -371,12 +372,27 @@ def add_to_cart(request):
 
         if not product_id:
             return JsonResponse({"success": False, "message": "شناسه محصول نامعتبر است."}, status=400)
+            return JsonResponse({"success": False, "message": "شناسه محصول نامعتبر است."}, status=400)
 
         product = get_object_or_404(Product, pk=product_id)
         if product.total_stock <= 0:
             return JsonResponse({"success": False, "message": "این محصول ناموجود است."}, status=400)
 
         selected_color = None
+        if product.has_colors:
+            if color_id:
+                selected_color = get_object_or_404(ProductColor, pk=color_id, product=product)
+            else:
+                selected_color = (
+                    product.colors.filter(is_default=True, stock__gt=0).first()
+                    or product.colors.filter(stock__gt=0).first()
+                )
+
+            if not selected_color:
+                return JsonResponse({"success": False, "message": "برای این محصول رنگ موجودی ثبت نشده است."}, status=400)
+
+            if selected_color.stock <= 0:
+                return JsonResponse({"success": False, "message": "رنگ انتخاب‌شده ناموجود است."}, status=400)
         if product.has_colors:
             if color_id:
                 selected_color = get_object_or_404(ProductColor, pk=color_id, product=product)
@@ -407,7 +423,9 @@ def add_to_cart(request):
 
         if cart_item:
             cart_item.quantity = new_quantity
+            cart_item.quantity = new_quantity
             cart_item.save(update_fields=["quantity"])
+            message = "تعداد این کالا در سبد بیشتر شد."
             message = "تعداد این کالا در سبد بیشتر شد."
         else:
             cart_item = CartItem.objects.create(
@@ -416,6 +434,7 @@ def add_to_cart(request):
                 quantity=1,
                 selected_color=selected_color,
             )
+            message = "محصول به سبد خرید اضافه شد."
             message = "محصول به سبد خرید اضافه شد."
 
         return JsonResponse(

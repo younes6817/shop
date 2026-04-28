@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}سفارش‌ها{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto py-6">
+  <section class="bg-white p-5 rounded-2xl shadow">
+    <h1 class="text-xl font-bold mb-4">تاریخچه سفارش‌ها</h1>
+    <p class="text-sm text-gray-600">این بخش فعلاً آماده اتصال به سیستم نهایی سفارش است.</p>
+    <p class="text-sm text-gray-600 mt-2">به‌زودی لیست سفارش‌ها و وضعیت هر سفارش در همین صفحه نمایش داده می‌شود.</p>
+    <a href="{% url 'user:profile' %}" class="inline-block mt-4 px-4 py-2 rounded-lg bg-color-light hover:bg-color-dark text-white transition">
+      بازگشت به حساب
+    </a>
+  </section>
+</div>
+{% endblock %}
