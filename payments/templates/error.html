@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خطا</title>
+    {% load static %}
+    <script src="{% static 'js/tailwind.js' %}"></script>
+</head>
+<body>
+    <div class="container mx-auto p-4 max-w-md text-center">
+        <div class="bg-gray-300 border border-red-200 rounded-xl p-6 mt-10">
+            <div class="text-red-500 text-5xl mb-4">✖</div>
+            <h1 class="text-xl font-bold text-red-600 mb-2">خطا در پرداخت</h1>
+            <p class="text-gray-600">{{ message|default:"پرداخت با مشکل مواجه شد" }}</p>
+        
+            <a href="/" class="inline-block mt-6 px-6 py-2 bg-color-light text-white rounded-lg hover:bg-color-dark transition">
+                بازگشت به صفحه اصلی
+            </a>
+        </div>
+    </div>
+</body>
+</html>

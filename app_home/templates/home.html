@@ -9,9 +9,9 @@
 {% if show_home_extras and bestsellers %}
   <div class="p-4">
     <div class="flex items-center justify-between mb-3">
-      <h2 class="text-lg font-bold text-gray-800">پرفروش‌ترین</h2>
     </div>
-    <div class="flex overflow-x-auto gap-3 pb-2 px-3 py-3 rounded-lg w-full bg-blue-100">
+    <div class="flex overflow-x-auto gap-3 pb-2 px-3 py-3 rounded-lg w-full bg-blue-600">
+      <img src="media/self_site/best_order.png" alt="فروش زیاد" class="w-[155px]">
       {% for product in bestsellers %}
         <div class="flex-shrink-0 w-40">
           <a href="{% url 'product:product' product.pk %}" class="block">
@@ -25,10 +25,8 @@
 
 {% if show_home_extras and special_offers %}
   <div class="p-4">
-    <div class="flex items-center justify-between mb-3">
-      <h2 class="text-lg font-bold text-gray-800">پیشنهاد ویژه</h2>
-    </div>
-    <div class="flex overflow-x-auto gap-3 pb-2 px-3 py-3 rounded-lg w-full bg-red-100">
+    <div class="flex overflow-x-auto gap-3 pb-2 px-3 py-3 rounded-lg w-full bg-red-600">
+      <img src="media/self_site/percent.png" alt="پیشنهاد شگفت انگیز" class="w-[155px]">
       {% for product in special_offers %}
         <div class="flex-shrink-0 w-40">
           <a href="{% url 'product:product' product.pk %}" class="block">

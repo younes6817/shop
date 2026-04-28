@@ -23,8 +23,28 @@
         <input type="text" name="title" class="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none" placeholder="مثال: خانه، محل کار">
       </div>
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">متن آدرس</label>
-        <textarea name="address" rows="3" class="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none" placeholder="آدرس کامل را وارد کنید"></textarea>
+        <label class="block text-sm font-medium text-gray-700 mb-1">نام</label>
+        <input type="text" name="full_name" class="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none" placeholder="مثال: کاظم محمدی">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">استان</label>
+        <input type="text" name="province" class="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none" placeholder="مثال: اصفهان">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">شهر</label>
+        <input type="text" name="city" class="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none" placeholder="مثل نایین">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">آدرس</label>
+        <textarea name="minimal_address" rows="3" class="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none" placeholder="مثال: شهرک امام علی، کوچه امام علی 16، خانه پنجم"></textarea>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">پلاک</label>
+        <input type="text" name="building_no" class="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none" placeholder="مثال: 95">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">کد پستی</label>
+        <input type="text" name="postal_code" class="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none" placeholder="1234567890: مثال">
       </div>
       <button type="submit" class="w-full py-2.5 rounded-xl bg-color-light hover:bg-color-dark text-white font-semibold transition">
         ذخیره آدرس
@@ -39,11 +59,11 @@
         {% for item in addresses %}
           <div class="border rounded-xl p-3">
             <p class="font-semibold text-gray-800">{{ item.title }}</p>
-            <p class="text-sm text-gray-600 mt-1">{{ item.address }}</p>
+            <p class="text-sm text-gray-600 mt-1">{{ item.full_name }} - {{ item.city }} - {{ item.minimal_address }}</p>
             <form method="post" class="mt-2">
               {% csrf_token %}
               <input type="hidden" name="action" value="delete">
-              <input type="hidden" name="index" value="{{ forloop.counter0 }}">
+              <input type="hidden" name="address_id" value="{{ item.id }}">
               <button type="submit" class="text-sm text-red-600 hover:text-red-700">حذف</button>
             </form>
           </div>

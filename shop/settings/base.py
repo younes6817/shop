@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'app_user',
     'app_setting',
     'app_home',
@@ -40,6 +41,10 @@ INSTALLED_APPS = [
     'app_category',
     'app_cart',
     'app_banner',
+    'payments',
+    'app_order',
+    'app_address',
+    'dashboard',
 ]
 
 MIDDLEWARE = [
@@ -141,9 +146,23 @@ USER_ROLE = [
     ('seller', 'فروشنده'),
 ]
 
+STATUS_ORDER_CHOICES = [
+    ('pending', 'در انتظار'),
+    ('error', 'ناموفق'),
+    ('error_pay', 'پرداخت ناموفق'),
+    ('paid', 'پرداخت شده'),
+    ('error_ship', 'مشکل در ارسال'),
+    ('shipped', 'ارسال شده'),
+    ('delivered', 'تحویل داده شده')
+]
 
 SHOP_NAME = 'فروشگاه یونس'
+SHOP_LAT = 35.000
+SHOP_LNG = 51.000
 
+MERCHANT_ID = "00000000-0000-0000-0000-000000000000"
 
-
-
+ZARINPAL_REQUEST_URL = "https://sandbox.zarinpal.com/pg/v4/payment/request.json"
+ZARINPAL_VERIFY_URL = "https://sandbox.zarinpal.com/pg/v4/payment/verify.json"
+ZARINPAL_STARTPAY_URL = "https://sandbox.zarinpal.com/pg/StartPay/"
+ZARINPAL_SIMULATE = True

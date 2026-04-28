@@ -6,10 +6,17 @@
   <title>{% block title %}{{ SHOP_NAME }}{% endblock %}</title>
   {% load static %}
   <script src="{% static 'js/tailwind.js' %}"></script>
+  <!-- فونت وزیر -->
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     :root {
       --primary-color: #373aff;
       --primary-dark: #1300c1;
+    }
+    body {
+      font-family: 'Vazirmatn', sans-serif;
     }
     .text-color-light { color: var(--primary-color); }
     .text-discount-dark { color: var(--primary-dark); }
@@ -29,27 +36,31 @@
   <div class="fixed top-0 left-0 w-full bg-white py-3 shadow-md z-50 flex items-center justify-between px-4">
     <a href="{% url 'home:home' %}" class="group flex items-center gap-2">
       <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-color-dark text-white text-sm font-bold shadow-md">
-        ✦
+        <i class="fas fa-store"></i>
       </span>
       <div class="leading-tight">
         <h1 class="text-lg font-extrabold tracking-tight text-gray-800 transition-colors group-hover:text-color-light">{{ SHOP_NAME }}</h1>
         <p class="text-[10px] text-gray-500">فروش آنلاین ساده و سریع</p>
       </div>
     </a>
-    <button id="menu-toggle" class="text-2xl font-bold leading-none">☰</button>
+    <button id="menu-toggle" class="text-2xl font-bold leading-none">
+      <i class="fas fa-bars"></i>
+    </button>
   </div>
 
-  <div id="mobile-menu" class="hidden absolute top-16 left-0 w-full bg-white shadow-lg z-50">
+  <div id="mobile-menu" class="hidden fixed top-16 left-0 w-full bg-white shadow-lg z-50">
     <div class="px-4 py-3">
       <form method="get" action="{% url 'home:home' %}" class="flex items-center gap-2">
-        <button type="submit" class="text-xl w-10 h-10 flex items-center justify-center bg-gray-100 rounded-lg hover:bg-gray-200">⌕</button>
+        <button type="submit" class="text-xl w-10 h-10 flex items-center justify-center bg-gray-100 rounded-lg hover:bg-gray-200">
+          <i class="fas fa-search"></i>
+        </button>
         <input type="text" name="q" value="{{ search_query }}" placeholder="جستجو" class="flex-1 px-4 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500">
       </form>
     </div>
     <div class="relative">
       <button id="category-toggle" class="w-full flex items-center justify-between px-4 py-3 text-gray-800 hover:bg-gray-100 text-right">
         <span>دسته‌بندی</span>
-        <span class="text-xl">⊞</span>
+        <i class="fas fa-chevron-down"></i>
       </button>
       <div id="category-list" class="hidden bg-gray-50 py-2">
         {% for category in categories %}
@@ -64,22 +75,22 @@
   </main>
 
   {% if request.user.is_authenticated and request.user.role == 'seller' or request.user.is_authenticated and request.user.is_staff %}
-    <a href="{% url 'admin:index' %}" class="fixed bottom-20 right-4 z-50 bg-color-light text-white px-4 py-2 rounded-lg shadow-md hover:bg-color-dark transition">
-      +
+    <a href="{% url 'dashboard:home' %}" class="fixed bottom-20 right-4 z-50 bg-color-light text-white w-10 h-10 flex items-center justify-center rounded-full shadow-md hover:bg-color-dark transition">
+      <i class="fas fa-chart-line text-lg"></i>
     </a>
   {% endif %}
   <nav class="fixed bottom-0 left-0 w-full h-16 z-50 bg-white border-t border-gray-200 shadow-[0_-4px_12px_rgba(0,0,0,0.06)]">
     <div class="grid grid-cols-3 h-full max-w-md mx-auto px-1">
       <a href="{% url 'home:home' %}" class="m-1 flex flex-col items-center justify-center rounded-md transition {% if request.resolver_match.url_name == 'home' %}bg-color-dark text-white{% else %}text-gray-600 hover:bg-gray-100{% endif %}">
-        <span class="text-lg leading-none">⌂</span>
+        <i class="fas fa-home text-lg leading-none"></i>
         <span class="text-xs mt-1 font-medium">خانه</span>
       </a>
       <a href="{% url 'cart:cart_view' %}" class="m-1 flex flex-col items-center justify-center rounded-md transition {% if request.resolver_match.namespace == 'cart' %}bg-color-dark text-white{% else %}text-gray-600 hover:bg-gray-100{% endif %}">
-        <span class="text-lg leading-none">🛒</span>
+        <i class="fas fa-shopping-cart text-lg leading-none"></i>
         <span class="text-xs mt-1 font-medium">سبد خرید</span>
       </a>
       <a href="{% url 'user:profile' %}" class="m-1 flex flex-col items-center justify-center rounded-md transition {% if request.resolver_match.namespace == 'user' %}bg-color-dark text-white{% else %}text-gray-600 hover:bg-gray-100{% endif %}">
-        <span class="text-lg leading-none">👤</span>
+        <i class="fas fa-user text-lg leading-none"></i>
         <span class="text-xs mt-1 font-medium">حساب</span>
       </a>
     </div>

@@ -6,3 +6,6 @@ class AppCartConfig(AppConfig):
     name = 'app_cart'
     verbose_name = 'سبد خرید'
 
+    def ready(self):
+        import app_cart.signals
+

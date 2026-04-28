@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
-
+from django.db.models import Sum
 from app_banner.models import Banner
 from app_product.models import Product
 
@@ -11,6 +11,7 @@ def home_view(request):
     category_id = (request.GET.get("category") or "").strip()
 
     products = Product.objects.filter(is_active=True)
+    # product_stock = Product.objects.filter(is_active=True, stock=)
 
     if query:
         products = products.filter(name__icontains=query)
@@ -23,10 +24,26 @@ def home_view(request):
     show_home_extras = not query and not category_id
 
     if show_home_extras:
-        bestsellers = products.filter(sold_count__gt=0).order_by("-sold_count")[:10]
+        bestsellers = Product.objects.filter(
+            sold_count__gte=10,
+            is_active=True
+        ).annotate(
+            current_stock=Sum('colors__stock')
+        ).filter(
+            current_stock__gt=0
+        ).order_by('-sold_count')[:10]
+
         if not bestsellers:
             bestsellers = products.order_by("-created_at")[:10]
-        special_offers = products.filter(discount_percent__gte=20)
+
+        special_offers = Product.objects.filter(
+            discount_percent__gt=22,
+            is_active=True
+        ).annotate(
+            current_stock=Sum('colors__stock')
+        ).filter(
+            current_stock__gt=0
+        ).order_by('-discount_percent')[:10]
         banners = Banner.objects.all().order_by("position")
     else:
         bestsellers = Product.objects.none()

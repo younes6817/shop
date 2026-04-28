@@ -22,10 +22,10 @@
         <div class="space-y-2">
           {% for addr in addresses %}
             <label class="flex items-start gap-2 rounded-lg border border-gray-200 p-3 cursor-pointer hover:border-color-light transition">
-              <input type="radio" name="address_index" value="{{ forloop.counter0 }}" class="mt-1" {% if selected_address_index == forloop.counter0|stringformat:"s" %}checked{% endif %}>
+              <input type="radio" name="address_id" value="{{ addr.id }}" class="mt-1" {% if selected_address and selected_address.id == addr.id %}checked{% endif %}>
               <div>
                 <p class="font-semibold text-sm">{{ addr.title }}</p>
-                <p class="text-sm text-gray-600">{{ addr.address }}</p>
+                <p class="text-sm text-gray-600">{{ addr.full_name }} - {{ addr.city }} - {{ addr.minimal_address }}</p>
               </div>
             </label>
           {% endfor %}
@@ -44,11 +44,11 @@
 
       <div>
         <label class="block mb-1 text-sm font-medium">استان</label>
-        <input type="text" name="province" value="{{ form_data.province }}" class="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:border-color-light" placeholder="تهران">
+        <input type="text" id="province-input" name="province" value="{{ form_data.province }}" class="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:border-color-light" placeholder="تهران">
       </div>
       <div>
         <label class="block mb-1 text-sm font-medium">شهر</label>
-        <input type="text" name="city" value="{{ form_data.city }}" class="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:border-color-light" placeholder="تهران">
+        <input type="text" id="city-input" name="city" value="{{ form_data.city }}" class="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:border-color-light" placeholder="تهران">
       </div>
       <div>
         <label class="block mb-1 text-sm font-medium">آدرس</label>
@@ -69,6 +69,21 @@
       <div>
         <label class="block mb-1 text-sm font-medium">واحد(اختیاری)</label>
         <input type="text" name="unit_no" value="{{ form_data.unit_no }}" class="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:border-color-light" placeholder="2">
+      </div>
+
+      <button type="button" id="save-address-btn" class="hidden mt-3 px-3 py-1.5 rounded-lg border border-blue-500 text-blue-500 text-xs hover:bg-blue-50">
+        ذخیره آدرس برای خرید های بعدی
+      </button>
+
+      <div id="address-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 w-80">
+          <h3 class="font-bold mb-4">عنوان آدرس</h3>
+          <input type="text" id="address-title" class="w-full border rounded-lg px-3 py-2 mb-4" placeholder="مثلا خانه، محل کار">
+          <div class="flex gap-2 justify-end">
+            <button type="button" id="cancel-address-modal" class="px-4 py-2 rounded-lg border">لغو</button>
+            <button type="button" id="confirm-save-address" class="px-4 py-2 rounded-lg bg-blue-500 text-white">ذخیره</button>
+          </div>
+        </div>
       </div>
 
       {% if form_errors %}
@@ -98,6 +113,12 @@
         <span>هزینه ارسال:</span>
         <span>{{ shipping_cost }} تومان</span>
       </div>
+      {% if distance_km %}
+        <div class="flex justify-between text-gray-500">
+          <span>فاصله تا فروشگاه:</span>
+          <span>{{ distance_km }} کیلومتر</span>
+        </div>
+      {% endif %}
       <div class="border-t pt-2 mt-2 flex justify-between font-bold text-base">
         <span>مبلغ قابل پرداخت:</span>
         <span class="text-color-light">{{ total_payable }} تومان</span>
@@ -105,4 +126,125 @@
     </div>
   </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const provinceInput = document.getElementById("province-input");
+  const cityInput = document.getElementById("city-input");
+  const minimalAddressInput = document.querySelector('textarea[name="minimal_address"]');
+  const buildingNoInput = document.querySelector('input[name="building_no"]');
+  const postalCodeInput = document.querySelector('input[name="postal_code"]');
+  const phoneInput = document.querySelector('input[name="phone"]');
+  const saveAddressBtn = document.getElementById("save-address-btn");
+  const modal = document.getElementById("address-modal");
+  const cancelBtn = document.getElementById("cancel-address-modal");
+  const confirmBtn = document.getElementById("confirm-save-address");
+
+    function checkFormFields() {
+      if (!provinceInput || !cityInput || !minimalAddressInput || !buildingNoInput || !postalCodeInput || !phoneInput || !saveAddressBtn) {
+        return;
+      }
+      
+      const isFilled = 
+        provinceInput.value.trim() !== "" &&
+        cityInput.value.trim() !== "" &&
+        minimalAddressInput.value.trim() !== "" &&
+        buildingNoInput.value.trim() !== "" &&
+        postalCodeInput.value.trim() !== "" &&
+        phoneInput.value.trim() !== "";
+      
+      if (isFilled) {
+        saveAddressBtn.classList.remove("hidden");
+      } else {
+        saveAddressBtn.classList.add("hidden");
+      }
+    }
+
+  provinceInput.addEventListener("input", checkFormFields);
+  cityInput.addEventListener("input", checkFormFields);
+  minimalAddressInput.addEventListener("input", checkFormFields);
+  buildingNoInput.addEventListener("input", checkFormFields);
+  postalCodeInput.addEventListener("input", checkFormFields);
+  phoneInput.addEventListener("input", checkFormFields);
+
+  if (saveAddressBtn) {
+    saveAddressBtn.onclick = function() {
+      modal.classList.remove("hidden");
+    };
+  }
+
+  if (cancelBtn) {
+    cancelBtn.onclick = function() {
+      modal.classList.add("hidden");
+    };
+  }
+
+  if (confirmBtn) {
+    confirmBtn.onclick = function() {
+      const title = document.getElementById("address-title").value;
+      if (!title) {
+        alert("لطفا عنوان را وارد کنید");
+        return;
+      }
+      
+      // گرفتن مستقیم مقادیر از inputها
+      const fullName = document.querySelector('input[name="full_name"]')?.value || "";
+      const province = provinceInput.value;
+      const city = cityInput.value;
+      const minimalAddress = minimalAddressInput.value;
+      const buildingNo = buildingNoInput.value;
+      const postalCode = postalCodeInput.value;
+      const phone = phoneInput.value;
+      const unitNo = document.querySelector('input[name="unit_no"]')?.value || "";
+      
+      // ساخت FormData جدید
+      const formData = new FormData();
+      formData.append("action", "save_address");
+      formData.append("title", title);
+      formData.append("full_name", fullName);
+      formData.append("province", province);
+      formData.append("city", city);
+      formData.append("minimal_address", minimalAddress);
+      formData.append("building_no", buildingNo);
+      formData.append("postal_code", postalCode);
+      formData.append("phone", phone);
+      formData.append("unit_no", unitNo);
+      formData.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+      
+      fetch("", {
+        method: "POST",
+        body: formData,
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          modal.classList.add("hidden");
+          location.reload();
+        } else {
+          alert(data.error || "خطا در ذخیره آدرس");
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        alert("خطا در ذخیره آدرس");
+      });
+    };
+  }
+
+  const addressRadios = document.querySelectorAll('input[name="address_id"]');
+  addressRadios.forEach(radio => {
+    radio.addEventListener('click', function() {
+      if (this.dataset.wasChecked === 'true') {
+        this.checked = false;
+        this.dataset.wasChecked = 'false';
+      } else {
+        addressRadios.forEach(r => r.dataset.wasChecked = 'false');
+        this.dataset.wasChecked = 'true';
+      }
+    });
+  });
+
+  checkFormFields();
+});
+</script>
 {% endblock %}

@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from colorfield.fields import ColorField
+from django.db.models import Sum
 
 class Product(models.Model):
     name = models.CharField(max_length=200, verbose_name="نام محصول")
@@ -10,12 +11,12 @@ class Product(models.Model):
         default=0, null=True, blank=True, verbose_name="درصد تخفیف"
     )
     sold_count = models.PositiveIntegerField(default=0, verbose_name="تعداد فروش")
-    stock = models.PositiveIntegerField(verbose_name="موجودی")
     is_active = models.BooleanField(default=True, verbose_name="فعال")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ ایجاد")
     category = models.ForeignKey(
         'app_category.Category', on_delete=models.CASCADE, verbose_name="دسته‌بندی"
     )
+    weight = models.PositiveIntegerField(default=500, verbose_name="وزن به گرم")
 
     class Meta:
         verbose_name = "محصول"
@@ -26,6 +27,8 @@ class Product(models.Model):
     
     def clean(self):
         super().clean()
+        if self.pk and not self.colors.exists():
+            raise ValidationError("هر محصول باید حداقل یک رنگ (حتی 'ساده') داشته باشد.")
     
     def _to_persian_num(self, num):
         """تبدیل عدد انگلیسی به فارسی"""
@@ -54,6 +57,10 @@ class Product(models.Model):
     def has_colors(self):
         return self.colors.exists()
     
+    @property
+    def total_stock(self):
+        return self.colors.aggregate(total=Sum('stock'))['total'] or 0
+    
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
@@ -65,6 +72,10 @@ class ProductColor(models.Model):
     color_name = models.CharField(max_length=20, verbose_name="نام رنگ")
     stock = models.PositiveBigIntegerField(verbose_name="موجودی این رنگ")
     is_default = models.BooleanField(default=False, verbose_name="رنگ پیشفرض")
+
+    @property
+    def total_stock(self):
+        return self.colors.aggregate(total=Sum('stock'))['total'] or 0
 
     class Meta:
         verbose_name = "رنگ محصول"

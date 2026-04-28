@@ -18,7 +18,7 @@ class ProductSpecInline(admin.TabularInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price', 'discount_percent', 'stock', 'colors_count', 'is_active')
+    list_display = ('name', 'price', 'discount_percent', 'colors_count', 'weight','is_active')
     list_filter = ('is_active', 'category', 'discount_percent')
     search_fields = ('name', 'description')
     inlines = [ProductColorInline, ProductImageInline, ProductSpecInline]
@@ -28,8 +28,11 @@ class ProductAdmin(admin.ModelAdmin):
             'fields': ('name', 'description', 'category', 'is_active')
         }),
         ('قیمت و موجودی', {
-            'fields': ('price', 'discount_percent', 'stock')
+            'fields': ('price', 'discount_percent')
         }),
+        ('مشخصات', {
+            'fields': ('weight',)
+        })
     )
     
     def colors_count(self, obj):

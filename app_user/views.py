@@ -63,8 +63,8 @@ def login_view(request):
 def main_view(request):
     profile_options = [
         {"title": "تنظیمات حساب", "subtitle": "ویرایش اطلاعات شخصی", "href": "/account/profile_edit/"},
-        {"title": "سفارش‌ها", "subtitle": "مشاهده تاریخچه خرید", "href": "/account/orders/"},
-        {"title": "آدرس‌ها", "subtitle": "مدیریت آدرس‌های ارسال", "href": "/account/addresses/"},
+        {"title": "سفارش‌ها", "subtitle": "مشاهده تاریخچه خرید", "href": "/orders/"},
+        {"title": "آدرس‌ها", "subtitle": "مدیریت آدرس‌های ارسال", "href": "/address/"},
         {"title": "امنیت", "subtitle": "رمز عبور و امنیت حساب", "href": "/account/security/"},
     ]
     return render(request, "main.html", {"profile_options": profile_options})
@@ -96,45 +96,6 @@ def profile_edit_view(request):
         form = ProfileForm(instance=request.user)
 
     return render(request, "profile_edit.html", {"form": form})
-
-
-@login_required
-def orders_view(request):
-    return render(request, "orders.html")
-
-
-@login_required
-def addresses_view(request):
-    addresses = request.session.get("account_addresses", [])
-
-    if request.method == "POST":
-        action = request.POST.get("action")
-
-        if action == "add":
-            title = (request.POST.get("title") or "").strip()
-            text = (request.POST.get("address") or "").strip()
-            if title and text:
-                addresses.append({"title": title, "address": text})
-                request.session["account_addresses"] = addresses
-                request.session.modified = True
-                messages.success(request, "آدرس جدید ذخیره شد.")
-            else:
-                messages.error(request, "عنوان و متن آدرس الزامی است.")
-
-        if action == "delete":
-            try:
-                idx = int(request.POST.get("index", "-1"))
-            except ValueError:
-                idx = -1
-            if 0 <= idx < len(addresses):
-                addresses.pop(idx)
-                request.session["account_addresses"] = addresses
-                request.session.modified = True
-                messages.success(request, "آدرس حذف شد.")
-
-        return redirect("user:addresses")
-
-    return render(request, "addresses.html", {"addresses": addresses})
 
 
 @login_required

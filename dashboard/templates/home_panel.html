@@ -1,0 +1,209 @@
+{% extends "base_panel.html" %}
+{% load humanize %} 
+
+{% block title %}داشبورد{% endblock %}
+{% block page_title %}پیشخوان مدیریت{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- کارت کل سفارشات -->
+    <div class="bg-white p-4 rounded-xl shadow flex items-center justify-between">
+        <div>
+            <p class="text-sm text-gray-500">کل سفارشات</p>
+            <p class="text-2xl font-bold">{{ total_orders }}</p>
+        </div>
+        <i class="fas fa-shopping-cart text-3xl text-blue-500"></i>
+    </div>
+    <!-- کارت کل محصولات -->
+    <div class="bg-white p-4 rounded-xl shadow flex items-center justify-between">
+        <div>
+            <p class="text-sm text-gray-500">کل محصولات</p>
+            <p class="text-2xl font-bold">{{ total_products }}</p>
+        </div>
+        <i class="fas fa-box text-3xl text-green-500"></i>
+    </div>
+    <!-- کارت کاربران -->
+    <div class="bg-white p-4 rounded-xl shadow flex items-center justify-between">
+        <div>
+            <p class="text-sm text-gray-500">تعداد کاربران</p>
+            <p class="text-2xl font-bold">{{ total_users }}</p>
+        </div>
+        <i class="fas fa-users text-3xl text-purple-500"></i>
+    </div>
+</div>
+
+<h3 class="text-2xl font-bold px-1 py-4">درآمد</h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- کارت مجموع درآمد کل -->
+    <div class="bg-white p-4 rounded-xl shadow flex items-center justify-between">
+        <div>
+            <p class="text-sm text-gray-500">مجموع درآمد کسب شده</p>
+            <p class="text-2xl font-bold">{{ total_sales|floatformat:0|intcomma }}</p>
+        </div>
+        <i class="fas fa-dollar-sign text-3xl text-yellow-500"></i>
+    </div>
+    <!-- کارت درآمد ماه -->
+    <div class="bg-white p-4 rounded-xl shadow flex items-center justify-between">
+        <div>
+            <p class="text-sm text-gray-500">درآمد این ماه</p>
+            <p class="text-2xl font-bold">{{ monthly_sales|floatformat:0|intcomma }}</p>
+        </div>
+        <i class="fas fa-calendar-alt text-3xl text-indigo-500"></i>
+    </div>
+    <!-- کارت درآمد سال -->
+    <div class="bg-white p-4 rounded-xl shadow flex items-center justify-between">
+        <div>
+            <p class="text-sm text-gray-500">درآمد امسال</p>
+            <p class="text-2xl font-bold">{{ yearly_sales|floatformat:0|intcomma }}</p>
+        </div>
+        <i class="fas fa-chart-line text-3xl text-red-500"></i>
+    </div>
+</div>
+
+<!-- نمودار درآمد -->
+<div class="mt-8">
+    <div class="bg-white rounded-xl shadow p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xl font-bold text-gray-800">روند درآمد</h3>
+            <div class="flex gap-2">
+                <button id="btn-week" class="px-4 py-2 text-sm rounded-lg bg-blue-500 hover:bg-blue-600 text-white transition">هفته</button>
+                <button id="btn-month" class="px-4 py-2 text-sm rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-700 transition">ماه</button>
+                <button id="btn-year" class="px-4 py-2 text-sm rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-700 transition">سال</button>
+            </div>
+        </div>
+        <div class="relative h-64 w-full">
+            <canvas id="revenueChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- ================ داده‌های JSON ================ -->
+<!-- این تگ‌ها باید دقیقاً همینجا، داخل بلاک content باشند -->
+{{ week_labels|json_script:"week-labels" }}
+{{ week_data|json_script:"week-data" }}
+{{ monthly_labels|json_script:"month-labels" }}
+{{ monthly_data|json_script:"month-data" }}
+{{ yearly_labels|json_script:"year-labels" }}
+{{ yearly_data|json_script:"year-data" }}
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+(function() {
+    function getJsonData(id) {
+        const el = document.getElementById(id);
+        if (!el) {
+            console.error('Element not found:', id);
+            return [];
+        }
+        try {
+            return JSON.parse(el.textContent);
+        } catch(e) {
+            console.error('JSON parse error for', id, e);
+            return [];
+        }
+    }
+
+    const weekLabels = getJsonData('week-labels');
+    const weekData = getJsonData('week-data');
+    const monthLabels = getJsonData('month-labels');
+    const monthData = getJsonData('month-data');
+    const yearLabels = getJsonData('year-labels');
+    const yearData = getJsonData('year-data');
+
+    console.log('Week data:', weekData);
+    console.log('Month data:', monthData);
+    console.log('Year data:', yearData);
+
+    const canvas = document.getElementById('revenueChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    // محاسبه محدوده مناسب برای محور Y
+    function getYRange(data) {
+        const maxVal = Math.max(...data, 1);
+        const padding = Math.max(50000, maxVal * 0.2);
+        return { min: 0, max: maxVal + padding };
+    }
+
+    const initialRange = getYRange(weekData);
+
+    let chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: weekLabels,
+            datasets: [{
+                label: 'درآمد (تومان)',
+                data: weekData,
+                borderColor: '#3b82f6',
+                backgroundColor: 'rgba(59, 130, 246, 0.05)',
+                borderWidth: 4,
+                tension: 0.3,
+                fill: false,
+                pointBackgroundColor: '#2563eb',
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 3,
+                pointRadius: 6,
+                pointHoverRadius: 9
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: (ctx) => `${ctx.parsed.y.toLocaleString()} تومان`
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    min: initialRange.min,
+                    max: initialRange.max,
+                    ticks: {
+                        callback: (val) => val.toLocaleString()
+                    }
+                }
+            }
+        }
+    });
+
+    window.revenueChart = chart;
+
+    function updateChart(labels, data) {
+        const range = getYRange(data);
+        chart.data.labels = labels;
+        chart.data.datasets[0].data = data;
+        chart.options.scales.y.min = range.min;
+        chart.options.scales.y.max = range.max;
+        chart.update();
+    }
+
+    function setActiveButton(activeBtn) {
+        document.querySelectorAll('#btn-week, #btn-month, #btn-year').forEach(btn => {
+            btn.classList.remove('bg-blue-500', 'hover:bg-blue-600', 'text-white');
+            btn.classList.add('bg-gray-200', 'hover:bg-gray-300', 'text-gray-700');
+        });
+        activeBtn.classList.remove('bg-gray-200', 'hover:bg-gray-300', 'text-gray-700');
+        activeBtn.classList.add('bg-blue-500', 'hover:bg-blue-600', 'text-white');
+    }
+
+    document.getElementById('btn-week').addEventListener('click', function() {
+        updateChart(weekLabels, weekData);
+        setActiveButton(this);
+    });
+    document.getElementById('btn-month').addEventListener('click', function() {
+        updateChart(monthLabels, monthData);
+        setActiveButton(this);
+    });
+    document.getElementById('btn-year').addEventListener('click', function() {
+        updateChart(yearLabels, yearData);
+        setActiveButton(this);
+    });
+})();
+</script>
+{% endblock %}

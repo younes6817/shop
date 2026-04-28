@@ -8,7 +8,11 @@ urlpatterns = [
     path('account/', include('app_user.urls')),
     path('', include('app_home.urls')),
     path('cart/', include('app_cart.urls')),
-    path('product/', include('app_product.urls'))
+    path('product/', include('app_product.urls')),
+    path('payment/', include('payments.urls')),
+    path('orders/', include('app_order.urls')),
+    path('address/', include('app_address.urls')),
+    path('panel/', include('dashboard.urls')),
 ]
 
 
