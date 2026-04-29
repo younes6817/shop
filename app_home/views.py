@@ -63,3 +63,7 @@ def home_view(request):
             "show_home_extras": show_home_extras,
         },
     )
+
+
+def contact_view(request):
+    return render(request, 'contact.html')

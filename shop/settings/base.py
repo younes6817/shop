@@ -157,6 +157,10 @@ STATUS_ORDER_CHOICES = [
 ]
 
 SHOP_NAME = 'فروشگاه یونس'
+SHOP_PHONE = "09123456789"
+SHOP_EMAIL = "info@yourstore.com"
+SHOP_ADDRESS = "تهران، خیابان ولیعصر، کوچه گل"
+SHOP_WORKING_HOURS = "شنبه تا پنجشنبه ۹ صبح تا ۶ عصر"
 SHOP_LAT = 35.000
 SHOP_LNG = 51.000
 

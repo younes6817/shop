@@ -1,7 +1,5 @@
 from django.conf import settings
-
 from app_category.models import Category
-
 
 def shop_info(request):
     return {
@@ -11,4 +9,8 @@ def shop_info(request):
         "APP_VERSION": getattr(settings, "APP_VERSION", "normal"),
         "PREMIUM_FEATURES": getattr(settings, "PREMIUM_FEATURES", False),
         "SUPER_FEATURES": getattr(settings, "SUPER_FEATURES", False),
+        "SHOP_PHONE": getattr(settings, "SHOP_PHONE", ""),
+        "SHOP_EMAIL": getattr(settings, "SHOP_EMAIL", ""),
+        "SHOP_ADDRESS": getattr(settings, "SHOP_ADDRESS", ""),
+        "SHOP_WORKING_HOURS": getattr(settings, "SHOP_WORKING_HOURS", ""),
     }

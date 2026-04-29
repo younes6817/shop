@@ -6,9 +6,6 @@
   <title>{% block title %}{{ SHOP_NAME }}{% endblock %}</title>
   {% load static %}
   <script src="{% static 'js/tailwind.js' %}"></script>
-  <!-- فونت وزیر -->
-  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     :root {
@@ -16,13 +13,12 @@
       --primary-dark: #1300c1;
     }
     body {
-      font-family: 'Vazirmatn', sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     .text-color-light { color: var(--primary-color); }
     .text-discount-dark { color: var(--primary-dark); }
     .bg-color-light { background-color: var(--primary-color); }
     .bg-color-dark { background-color: var(--primary-dark); }
-    .ring-color-light { --tw-ring-color: var(--primary-color); }
     .ring-color-light { --tw-ring-color: var(--primary-color); }
     .scrollbar-hide {
       -ms-overflow-style: none;
@@ -33,7 +29,6 @@
     }
   </style>
 </head>
-<body class="pt-16 pb-16 bg-gray-50">
 <body class="pt-16 pb-16 bg-gray-50">
   <div class="fixed top-0 left-0 w-full bg-white py-3 shadow-md z-50 flex items-center justify-between px-4">
     <a href="{% url 'home:home' %}" class="group flex items-center gap-2">
@@ -67,12 +62,11 @@
       <div id="category-list" class="hidden bg-gray-50 py-2">
         {% for category in categories %}
           <a href="{% url 'home:home' %}?category={{ category.id }}" class="block px-6 py-2 text-gray-700 hover:bg-white">{{ category.name }}</a>
-          <a href="{% url 'home:home' %}?category={{ category.id }}" class="block px-6 py-2 text-gray-700 hover:bg-white">{{ category.name }}</a>
         {% endfor %}
       </div>
+      <a href="{% url 'home:contact' %}" class="block px-6 py-2 text-gray-700 hover:bg-white font-medium">تماس با ما</a>
     </div>
   </div>
-
 
   <main class="p-4">
     {% block content %}{% endblock %}
@@ -83,6 +77,7 @@
       <i class="fas fa-chart-line text-lg"></i>
     </a>
   {% endif %}
+
   <nav class="fixed bottom-0 left-0 w-full h-16 z-50 bg-white border-t border-gray-200 shadow-[0_-4px_12px_rgba(0,0,0,0.06)]">
     <div class="grid grid-cols-3 h-full max-w-md mx-auto px-1">
       <a href="{% url 'home:home' %}" class="m-1 flex flex-col items-center justify-center rounded-md transition {% if request.resolver_match.url_name == 'home' %}bg-color-dark text-white{% else %}text-gray-600 hover:bg-gray-100{% endif %}">
@@ -100,34 +95,23 @@
     </div>
   </nav>
 
-
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const toggle = document.getElementById("menu-toggle");
-      const menu = document.getElementById("mobile-menu");
     document.addEventListener("DOMContentLoaded", function () {
       const toggle = document.getElementById("menu-toggle");
       const menu = document.getElementById("mobile-menu");
       if (toggle && menu) {
         toggle.addEventListener("click", () => menu.classList.toggle("hidden"));
-        toggle.addEventListener("click", () => menu.classList.toggle("hidden"));
       }
 
       const catToggle = document.getElementById("category-toggle");
       const catList = document.getElementById("category-list");
-      const catToggle = document.getElementById("category-toggle");
-      const catList = document.getElementById("category-list");
       if (catToggle && catList) {
-        catToggle.addEventListener("click", (e) => {
         catToggle.addEventListener("click", (e) => {
           e.stopPropagation();
           catList.classList.toggle("hidden");
-          catList.classList.toggle("hidden");
         });
         document.addEventListener("click", (e) => {
-        document.addEventListener("click", (e) => {
           if (!catToggle.contains(e.target) && !catList.contains(e.target)) {
-            catList.classList.add("hidden");
             catList.classList.add("hidden");
           }
         });
@@ -148,48 +132,7 @@
       }
       return cookieValue;
     }
-    function getCookie(name) {
-      let cookieValue = null;
-      if (document.cookie && document.cookie !== "") {
-        const cookies = document.cookie.split(";");
-        for (let i = 0; i < cookies.length; i++) {
-          const cookie = cookies[i].trim();
-          if (cookie.substring(0, name.length + 1) === name + "=") {
-            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-            break;
-          }
-        }
-      }
-      return cookieValue;
-    }
 
-    function removeFromCart(itemId, event) {
-      if (event) {
-        event.stopPropagation();
-        event.preventDefault();
-      }
-      if (!confirm("آیا مطمئن هستید؟")) return;
-
-      fetch(`/cart/remove/${itemId}/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "X-CSRFToken": getCookie("csrftoken") || "",
-          "X-Requested-With": "XMLHttpRequest"
-        }
-      })
-        .then(async (res) => {
-          if (!res.ok) {
-            const txt = await res.text();
-            throw new Error(txt || "خطای سرور");
-          }
-          return res.json();
-        })
-        .then((data) => {
-          if (data?.success) location.reload();
-        })
-        .catch(() => alert("خطا در ارتباط با سرور"));
-    }
     function removeFromCart(itemId, event) {
       if (event) {
         event.stopPropagation();

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}تماس با ما{% endblock %}
+{% block content %}
+<div class="max-w-2xl mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-6">تماس با ما</h1>
+    <div class="bg-white rounded-xl shadow p-6 space-y-4">
+        {% if SHOP_PHONE %}
+        <p class="flex items-center gap-2">
+            <i class="fas fa-phone text-color-light"></i>
+            <strong>تلفن:</strong> {{ SHOP_PHONE }}
+        </p>
+        {% endif %}
+        {% if SHOP_EMAIL %}
+        <p class="flex items-center gap-2">
+            <i class="fas fa-envelope text-color-light"></i>
+            <strong>ایمیل:</strong> {{ SHOP_EMAIL }}
+        </p>
+        {% endif %}
+        {% if SHOP_ADDRESS %}
+        <p class="flex items-center gap-2">
+            <i class="fas fa-map-marker-alt text-color-light"></i>
+            <strong>آدرس:</strong> {{ SHOP_ADDRESS }}
+        </p>
+        {% endif %}
+        {% if SHOP_WORKING_HOURS %}
+        <p class="flex items-center gap-2">
+            <i class="fas fa-clock text-color-light"></i>
+            <strong>ساعات کاری:</strong> {{ SHOP_WORKING_HOURS }}
+        </p>
+        {% endif %}
+        {% if not SHOP_PHONE and not SHOP_EMAIL and not SHOP_ADDRESS %}
+            <p class="text-gray-500">اطلاعات تماس به‌زودی ثبت می‌شود.</p>
+        {% endif %}
+    </div>
+</div>
+<div class="bg-white rounded-xl shadow p-6 space-y-4">
+    <h1 class="font-bold font-lg">ارسال پیام به ما</h1>
+    <p class="font-sm">مطاسفانه الان اینترنت بین الملل قطعه و در حال حاظر این بخش غیر فعال است</p>
+</div>
+{% endblock %}
